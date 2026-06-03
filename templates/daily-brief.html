@@ -10,9 +10,8 @@
     :root {
       color-scheme: dark;
       --bg: #060606;
-      --bg-soft: #0b0b0b;
       --panel: rgba(18, 18, 18, 0.88);
-      --panel-2: rgba(22, 22, 22, 0.82);
+      --panel-soft: rgba(255, 255, 255, 0.025);
       --line: rgba(255, 236, 209, 0.11);
       --line-strong: rgba(255, 178, 78, 0.28);
       --text: #f3eee5;
@@ -20,32 +19,23 @@
       --dim: #867c6e;
       --accent: #f4a84d;
       --accent-2: #ffd7a4;
-      --green: #7cd889;
-      --green-soft: rgba(124, 216, 137, 0.12);
-      --blue: #8bb3ff;
-      --blue-soft: rgba(139, 179, 255, 0.12);
-      --red: #ff8a7d;
-      --red-soft: rgba(255, 138, 125, 0.12);
-      --glow: rgba(244, 168, 77, 0.20);
-      --radius-lg: 18px;
-      --radius: 14px;
-      --radius-sm: 10px;
+      --adopt: #7cd889;
+      --try: #f4a84d;
+      --track: #8bb3ff;
+      --note: #867c6e;
       --shadow: 0 26px 80px rgba(0, 0, 0, 0.44);
-      --max: 1160px;
+      --max: 1120px;
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       min-height: 100vh;
       color: var(--text);
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      letter-spacing: -0.015em;
-      background:
-        radial-gradient(circle at 10% 0%, rgba(244,168,77,0.10), transparent 26%),
-        radial-gradient(circle at 90% 10%, rgba(139,179,255,0.08), transparent 22%),
-        linear-gradient(180deg, #040404 0%, #070707 38%, #050505 100%);
+      letter-spacing: 0;
+      background: linear-gradient(180deg, #040404 0%, var(--bg) 38%, #050505 100%);
     }
 
     body::before {
@@ -77,17 +67,6 @@
       isolation: isolate;
     }
 
-    .frame::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at top, rgba(244,168,77,0.08), transparent 30%),
-        linear-gradient(180deg, rgba(255,255,255,0.02), transparent 24%);
-      z-index: 0;
-    }
-
     .toprail,
     .footrail {
       position: relative;
@@ -97,9 +76,7 @@
       gap: 12px;
       align-items: center;
       padding: 12px 16px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(8,8,8,0.56);
-      backdrop-filter: blur(10px);
+      background: rgba(8,8,8,0.62);
       font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-size: 11px;
       text-transform: uppercase;
@@ -107,11 +84,8 @@
       color: var(--muted);
     }
 
-    .footrail {
-      border-bottom: 0;
-      border-top: 1px solid var(--line);
-      background: rgba(10,10,10,0.62);
-    }
+    .toprail { border-bottom: 1px solid var(--line); }
+    .footrail { border-top: 1px solid var(--line); }
 
     .rail-group {
       display: flex;
@@ -125,8 +99,7 @@
       height: 8px;
       border-radius: 999px;
       background: var(--accent);
-      box-shadow: 0 0 0 4px rgba(244,168,77,0.10), 0 0 18px var(--glow);
-      animation: pulse 4.2s ease-in-out infinite;
+      box-shadow: 0 0 0 4px rgba(244,168,77,0.10), 0 0 18px rgba(244,168,77,0.20);
     }
 
     .canvas {
@@ -137,256 +110,103 @@
       gap: 12px;
     }
 
-    .hero {
-      display: grid;
-      grid-template-columns: 1.28fr 0.72fr;
-      gap: 12px;
-      align-items: stretch;
-    }
-
     .panel {
-      position: relative;
       border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      background: linear-gradient(180deg, rgba(20,20,20,0.86), rgba(14,14,14,0.76));
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(20,20,20,0.88), rgba(14,14,14,0.78));
       overflow: hidden;
     }
 
-    .panel::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%);
-      opacity: 0.75;
-    }
-
     .inner {
-      position: relative;
-      z-index: 1;
-      padding: 14px;
+      padding: 16px;
     }
 
-    .microhead {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 12px;
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 10px;
-      color: var(--dim);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-    }
-
-    .headline {
-      margin: 0 0 10px;
-      max-width: 15ch;
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: clamp(1.7rem, 2.7vw, 2.45rem);
-      line-height: 1.02;
-      letter-spacing: -0.045em;
-      text-transform: uppercase;
-      color: var(--accent-2);
-      text-wrap: balance;
-    }
-
-    .lede {
-      margin: 0;
-      max-width: 65ch;
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.58;
-    }
-
-    .hero-grid {
+    .top-story {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .microcard {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 10px 10px 11px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-    }
-
-    .eyebrow {
-      margin-bottom: 6px;
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--dim);
-    }
-
-    .microcard strong,
-    .metric strong,
-    .module strong,
-    .step strong,
-    .thumb-copy strong,
-    .caption strong,
-    .meta-item strong {
-      display: block;
-      font-size: 0.93rem;
-      line-height: 1.3;
-      margin-bottom: 5px;
-    }
-
-    .microcard span,
-    .metric p,
-    .module p,
-    .step p,
-    .signal p,
-    .feature li,
-    .linklist a,
-    .linklist small,
-    .caption p,
-    .meta-grid p,
-    .footer-note p,
-    .thumb-copy p {
-      color: var(--muted);
-      font-size: 0.84rem;
-      line-height: 1.48;
-    }
-
-    .side-stack {
-      display: grid;
-      gap: 8px;
-    }
-
-    .metric {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 11px 12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-    }
-
-    .metric p,
-    .step p,
-    .module p,
-    .signal p { margin: 0; }
-
-    .signalband {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 10px;
-      align-items: center;
-      border: 1px solid var(--line-strong);
-      border-radius: 16px;
-      padding: 11px 13px;
-      background: linear-gradient(180deg, rgba(244,168,77,0.12), rgba(244,168,77,0.05));
-      box-shadow: inset 0 0 0 1px rgba(244,168,77,0.06);
-    }
-
-    .signalband .label,
-    .section-title h2 {
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .signalband .label {
-      color: var(--accent-2);
-      font-size: 0.83rem;
-      white-space: nowrap;
-    }
-
-    .signalband .copy {
-      color: #edd4b0;
-      font-size: 0.89rem;
-      line-height: 1.45;
-    }
-
-    .main {
-      display: grid;
-      grid-template-columns: 1.02fr 0.98fr;
+      grid-template-columns: 1fr 0.34fr;
       gap: 12px;
+    }
+
+    .section-title,
+    .story-source,
+    .meta-label {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
     }
 
     .section-title {
       display: flex;
       justify-content: space-between;
+      gap: 12px;
       align-items: baseline;
-      gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      color: var(--dim);
+      font-size: 10px;
     }
 
     .section-title h2 {
       margin: 0;
       color: var(--accent-2);
       font-size: 0.98rem;
+      letter-spacing: 0.08em;
     }
 
-    .section-title span {
+    h1 {
+      margin: 0 0 12px;
+      max-width: 18ch;
       font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 10px;
+      font-size: clamp(1.75rem, 3vw, 2.7rem);
+      line-height: 1.04;
+      letter-spacing: 0;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--dim);
+      color: var(--accent-2);
+      text-wrap: balance;
     }
 
-    .signals,
-    .stack,
-    .steps,
-    .linklist {
-      display: grid;
-      gap: 8px;
-    }
-
-    .signal,
-    .module,
-    .step {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 10px 11px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.026), rgba(255,255,255,0.014));
-    }
-
-    .signal-top {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      align-items: start;
-      margin-bottom: 7px;
-    }
-
-    .signal small {
-      display: block;
-      margin-bottom: 5px;
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-
-    .signal h3 {
+    h3 {
       margin: 0;
-      font-size: 0.96rem;
-      line-height: 1.34;
-      letter-spacing: -0.02em;
+      font-size: 1rem;
+      line-height: 1.35;
+      letter-spacing: 0;
     }
 
-    .signal h3 a {
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.58;
+    }
+
+    a {
       color: inherit;
       text-decoration: none;
     }
 
-    .signal h3 a:hover {
+    a:hover {
       text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
-    .module a {
-      color: inherit;
-      text-decoration: none;
+    .story-source {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      color: var(--dim);
+      font-size: 10px;
     }
 
-    .module a:hover {
-      text-decoration: underline;
+    .take {
+      max-width: 72ch;
+    }
+
+    .why-now {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      color: #edd4b0;
     }
 
     .tag {
@@ -404,173 +224,100 @@
       white-space: nowrap;
     }
 
-    .test { color: var(--green); background: var(--green-soft); border-color: rgba(124,216,137,0.22); }
-    .track { color: var(--blue); background: var(--blue-soft); border-color: rgba(139,179,255,0.22); }
-    .ignore { color: var(--red); background: var(--red-soft); border-color: rgba(255,138,125,0.22); }
-    .learn { color: var(--accent-2); background: rgba(244,168,77,0.12); border-color: rgba(244,168,77,0.24); }
+    .tag--adopt { color: var(--adopt); background: rgba(124,216,137,0.12); border-color: rgba(124,216,137,0.24); }
+    .tag--try { color: var(--try); background: rgba(244,168,77,0.12); border-color: rgba(244,168,77,0.26); }
+    .tag--track { color: var(--track); background: rgba(139,179,255,0.12); border-color: rgba(139,179,255,0.24); }
+    .tag--note { color: var(--note); background: rgba(134,124,110,0.12); border-color: rgba(134,124,110,0.28); }
 
-    .feature ul {
-      margin: 0;
-      padding-left: 17px;
-    }
-
-    .feature li + li { margin-top: 7px; }
-
-    .interest-strip {
+    .stats {
       display: grid;
-      grid-template-columns: 1.16fr 0.84fr;
-      gap: 12px;
+      gap: 8px;
     }
 
-    .focus {
-      position: relative;
-      border: 1px solid rgba(139,179,255,0.24);
-      border-radius: 18px;
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(139,179,255,0.12), rgba(139,179,255,0.04));
+    .stat,
+    .signal,
+    .radar li,
+    .one-move,
+    .meta-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-soft);
     }
 
-    .focus::before {
-      content: '';
-      position: absolute;
-      inset: auto 0 0 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(139,179,255,0.55), transparent);
+    .stat {
+      padding: 12px;
     }
 
-    .focus .inner p {
-      margin: 0;
-      color: #d5dff2;
-      font-size: 0.9rem;
-      line-height: 1.56;
+    .stat strong,
+    .meta-item strong {
+      display: block;
+      color: var(--text);
+      font-size: 1.05rem;
+      line-height: 1.3;
     }
 
-    .triple {
+    .signals {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-    }
-
-    .linklist a,
-    .linklist span {
-      display: block;
-      text-decoration: none;
-      color: var(--accent-2);
-      border-top: 1px solid var(--line);
-      padding-top: 8px;
-    }
-
-    .linklist strong,
-    .linklist small {
-      display: block;
-    }
-
-    .linklist small {
-      margin-top: 4px;
-      color: var(--muted);
-    }
-
-    .linklist a:first-child,
-    .linklist span:first-child { border-top: 0; padding-top: 0; }
-    .linklist a:hover { text-decoration: underline; }
-
-    .sparkline {
-      height: 34px;
-      display: flex;
-      align-items: end;
-      gap: 4px;
-      margin-top: 6px;
-    }
-
-    .sparkline span {
-      display: block;
-      width: 100%;
-      border-radius: 999px 999px 4px 4px;
-      background: linear-gradient(180deg, rgba(244,168,77,0.92), rgba(244,168,77,0.28));
-      box-shadow: 0 0 14px rgba(244,168,77,0.12);
-      animation: shimmer 6s ease-in-out infinite;
-    }
-
-    .sparkline span:nth-child(1) { height: 32%; animation-delay: 0s; }
-    .sparkline span:nth-child(2) { height: 56%; animation-delay: 0.3s; }
-    .sparkline span:nth-child(3) { height: 48%; animation-delay: 0.6s; }
-    .sparkline span:nth-child(4) { height: 74%; animation-delay: 0.9s; }
-    .sparkline span:nth-child(5) { height: 66%; animation-delay: 1.2s; }
-    .sparkline span:nth-child(6) { height: 88%; animation-delay: 1.5s; }
-    .sparkline span:nth-child(7) { height: 64%; animation-delay: 1.8s; }
-
-    .tiny {
-      color: var(--dim);
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-    }
-
-    .visual-panel {
-      min-height: 100%;
-    }
-
-    .visual-card {
-      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
     }
 
-    .thumb-shell {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    .signal {
+      padding: 12px;
     }
 
-    .thumb {
-      height: 152px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)),
-        radial-gradient(circle at 72% 24%, rgba(244,168,77,0.28), transparent 23%),
-        linear-gradient(135deg, #0b0b0b, #111111 56%, #0a0a0a);
-      position: relative;
-      overflow: hidden;
+    .signal-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: start;
+      margin-bottom: 8px;
     }
 
-    .thumb::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.014) 1px, transparent 1px);
-      background-size: 100% 5px, 5px 100%;
-      opacity: 0.22;
-    }
-
-    .thumb::after {
-      content: '';
-      position: absolute;
-      left: 12px;
-      bottom: 12px;
+    .signal-source {
+      display: block;
+      margin-top: 5px;
+      color: var(--dim);
       font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-size: 10px;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(255,215,164,0.88);
     }
 
-    .thumb-copy {
-      padding: 11px 12px 12px;
-    }
-
-    .meta-grid {
+    .radar {
+      margin: 0;
+      padding: 0;
+      list-style: none;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .radar li {
+      padding: 11px 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .one-move {
+      padding: 14px;
+      border-color: var(--line-strong);
+      background: linear-gradient(180deg, rgba(244,168,77,0.10), rgba(244,168,77,0.04));
+    }
+
+    .metadata {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
     }
 
     .meta-item {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 10px 11px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.026), rgba(255,255,255,0.014));
+      padding: 11px 12px;
+    }
+
+    .meta-label {
+      margin-bottom: 5px;
+      color: var(--dim);
+      font-size: 10px;
     }
 
     .footer-note {
@@ -579,40 +326,34 @@
       border-top: 1px solid var(--line);
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(244,168,77,0.10), 0 0 14px rgba(244,168,77,0.18); }
-      50% { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(244,168,77,0.12), 0 0 22px rgba(244,168,77,0.28); }
-    }
-
-    @keyframes shimmer {
-      0%, 100% { filter: saturate(1) brightness(1); }
-      50% { filter: saturate(1.12) brightness(1.08); }
-    }
-
     @media (max-width: 940px) {
-      .hero,
-      .main,
-      .interest-strip,
-      .triple,
-      .hero-grid,
-      .story-strip,
-      .meta-grid { grid-template-columns: 1fr; }
+      .top-story,
+      .signals,
+      .metadata {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 620px) {
-      .shell { width: min(calc(100% - 10px), var(--max)); padding-top: 8px; }
+      .shell {
+        width: min(calc(100% - 10px), var(--max));
+        padding-top: 8px;
+      }
+
       .toprail,
       .footrail,
-      .signalband { grid-template-columns: 1fr; }
-      .signal-top { grid-template-columns: 1fr; }
-      .headline { font-size: 1.55rem; }
-      .canvas,
-      .inner { padding: 10px; }
-    }
+      .signal-top {
+        grid-template-columns: 1fr;
+      }
 
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      * { animation: none !important; transition: none !important; }
+      h1 {
+        font-size: 1.55rem;
+      }
+
+      .canvas,
+      .inner {
+        padding: 10px;
+      }
     }
   </style>
 </head>
@@ -622,302 +363,152 @@
       <div class="toprail">
         <div class="rail-group">
           <span class="status-dot"></span>
-          <span>{{ toprail.path }}</span>
           <span>{{ title }}</span>
           <span>{{ toprail.version }}</span>
+          <span>{{ issue_prefix }} {{ '%03d' % issue.number }}</span>
         </div>
         <div class="rail-group">
-          <span>mode: {{ toprail.mode }}</span>
-          <span>signals: {{ toprail.signals_count }}</span>
-          <span>delivery: {{ toprail.delivery }}</span>
-          <span>assets: {{ toprail.assets }}</span>
+          <span>{{ issue.date }}</span>
+          <span>{{ issue.time }}</span>
+          <span>sources scanned: {{ toprail.sources_scanned }}</span>
+          <span>articles read: {{ toprail.articles_read }}</span>
         </div>
       </div>
 
       <div class="canvas">
-        <section class="hero">
-          <article class="panel">
-            <div class="inner">
-              <div class="microhead">
-                <span>{{ issue_prefix | default('Issue') }} {{ '%03d' % issue.number }} // daily operator memo</span>
-                <span>{{ issue.day }} · {{ issue.date }} · {{ issue.time }}</span>
-              </div>
-              <h1 class="headline">{{ issue.headline }}</h1>
-              <p class="lede">{{ issue.lede }}</p>
-
-              <div class="hero-grid">
-                {% for card in hero_cards %}
-                <div class="microcard">
-                  <div class="eyebrow">{{ card.eyebrow }}</div>
-                  <strong>{{ card.title }}</strong>
-                  <span>{{ card.body }}</span>
-                </div>
-                {% endfor %}
-              </div>
-            </div>
-          </article>
-
-          <aside class="side-stack">
-            {% for item in side_stack %}
-            <div class="metric{% if item.visual %} visual-panel{% endif %}">
-              <div class="eyebrow">{{ item.eyebrow }}</div>
-              {% if item.visual %}
-              <div class="visual-card">
-                <div class="thumb" aria-hidden="true"></div>
-                <div class="caption">
-                  <strong>{{ item.title }}</strong>
-                  <p>{{ item.body }}</p>
-                </div>
-              </div>
-              {% else %}
-              <strong>{{ item.title }}</strong>
-              <p>{{ item.body }}</p>
-              {% endif %}
-              {% if item.sparkline %}
-              <div class="sparkline" aria-hidden="true">
-                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-              </div>
-              {% endif %}
-            </div>
-            {% endfor %}
-          </aside>
-        </section>
-
-        <div class="signalband">
-          <div class="label">Theme //</div>
-          <div class="copy">{{ issue.theme_line }}</div>
-          <div class="tiny">high signal / low drag</div>
-        </div>
-
-        <div class="story-strip">
+        <section class="top-story">
           <article class="panel">
             <div class="inner">
               <div class="section-title">
-                <h2>{{ image_treatment.heading }}</h2>
-                <span>{{ image_treatment.kicker }}</span>
+                <h2>Top story</h2>
+                <span>source-backed take</span>
               </div>
-              <div class="stack">
-                <div class="module">
-                  <div class="eyebrow">{{ image_treatment.rule_eyebrow }}</div>
-                  <strong>{{ image_treatment.rule_title }}</strong>
-                  <p>{{ image_treatment.rule_body }}</p>
-                </div>
-                <div class="module">
-                  <div class="eyebrow">{{ image_treatment.placement_eyebrow }}</div>
-                  <strong>{{ image_treatment.placement_title }}</strong>
-                  <p>{{ image_treatment.placement_body }}</p>
-                </div>
+              <div class="story-source">
+                <span>{{ top_story.source }}</span>
+                <span class="tag tag--{{ top_story.tag }}">{{ top_story.tag_label }}</span>
               </div>
-            </div>
-          </article>
-
-          <aside class="thumb-shell">
-            <div class="thumb" aria-hidden="true"></div>
-            <div class="thumb-copy">
-              <div class="eyebrow">{{ image_treatment.article_slot_eyebrow }}</div>
-              <strong>{{ image_treatment.article_slot_title }}</strong>
-              <p>{{ image_treatment.article_slot_body }}</p>
-            </div>
-          </aside>
-        </div>
-
-        <section class="main">
-          <article class="panel">
-            <div class="inner">
-              <div class="section-title">
-                <h2>Top signals</h2>
-                <span>what actually matters</span>
-              </div>
-              <div class="signals">
-                {% for signal in signals %}
-                <section class="signal">
-                  <div class="signal-top">
-                    <div>
-                      <small>Signal {{ signal.number }}</small>
-                      <h3>
-                        {% if signal.url %}
-                        <a href="{{ signal.url }}" target="_blank" rel="noopener noreferrer">{{ signal.headline }}</a>
-                        {% else %}
-                        <span>{{ signal.headline }}</span>
-                        {% endif %}
-                      </h3>
-                    </div>
-                    <span class="tag {{ signal.tag | lower }}">{{ signal.tag }}</span>
-                  </div>
-                  <p><strong>Why it matters:</strong> {{ signal.why }}</p>
-                </section>
-                {% endfor %}
-              </div>
-            </div>
-          </article>
-
-          <aside class="panel feature">
-            <div class="inner">
-              <div class="section-title">
-                <h2>For your build journey</h2>
-                <span>practical filter</span>
-              </div>
-              <ul>
-                {% for item in build_journey %}
-                <li>{{ item }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-          </aside>
-        </section>
-
-        <section class="interest-strip">
-          <article class="focus">
-            <div class="inner">
-              <div class="section-title">
-                <h2>Rising topic this week</h2>
-                <span>adaptive zone</span>
-              </div>
-              <p>
-                <strong>{{ rising_topic.name }}</strong> {{ rising_topic.body }}
-              </p>
-            </div>
-          </article>
-
-          <aside class="steps">
-            {% for detail in rising_details %}
-            <div class="step">
-              <div class="eyebrow">{{ detail.eyebrow }}</div>
-              <strong>{{ detail.title }}</strong>
-              <p>{{ detail.body }}</p>
-            </div>
-            {% endfor %}
-          </aside>
-        </section>
-
-        <section class="main">
-          <article class="panel">
-            <div class="inner">
-              <div class="section-title">
-                <h2>Agent / Hermes radar</h2>
-                <span>persistent lane</span>
-              </div>
-              <div class="stack">
-                {% for item in radar_items %}
-                <div class="module">
-                  <div class="eyebrow">{{ item.eyebrow }}</div>
-                  <strong>
-                    {% if item.url %}
-                    <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
-                    {% else %}
-                    {{ item.title }}
-                    {% endif %}
-                  </strong>
-                  <p>{{ item.body }}</p>
-                </div>
-                {% endfor %}
-              </div>
-            </div>
-          </article>
-
-          <aside class="panel">
-            <div class="inner">
-              <div class="section-title">
-                <h2>One move today</h2>
-                <span>concrete next action</span>
-              </div>
-              <div class="stack">
-                {% for move in moves %}
-                <div class="module">
-                  <div class="eyebrow">{{ move.eyebrow }}</div>
-                  <strong>
-                    {% if move.url %}
-                    <a href="{{ move.url }}" target="_blank" rel="noopener noreferrer">{{ move.title }}</a>
-                    {% else %}
-                    {{ move.title }}
-                    {% endif %}
-                  </strong>
-                  <p>{{ move.body }}</p>
-                </div>
-                {% endfor %}
-              </div>
-            </div>
-          </aside>
-        </section>
-
-        <section class="triple">
-          <article class="panel">
-            <div class="inner">
-              <div class="section-title">
-                <h2>Read next</h2>
-                <span>source route</span>
-              </div>
-              <div class="linklist">
-                {% for item in delivery_path %}
-                <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">
-                    <strong>{{ item.label }}</strong>
-                    <small>{{ item.body }}</small>
-                  </a>
+              <h1>
+                {% if top_story.url %}
+                <a href="{{ top_story.url }}" target="_blank" rel="noopener noreferrer">{{ top_story.headline }}</a>
                 {% else %}
-                <span>No valid article URLs were available in this run.</span>
-                {% endfor %}
-              </div>
+                {{ top_story.headline }}
+                {% endif %}
+              </h1>
+              <p class="take">{{ top_story.take }}</p>
+              {% if top_story.why_now %}
+              <p class="why-now">{{ top_story.why_now }}</p>
+              {% endif %}
             </div>
           </article>
 
-          <article class="panel">
-            <div class="inner">
-              <div class="section-title">
-                <h2>Reading rules</h2>
-                <span>from today's articles</span>
-              </div>
-              <div class="stack">
-                {% for rule in visual_rules %}
-                <div class="module">
-                  <div class="eyebrow">{{ rule.eyebrow }}</div>
-                  <strong>{{ rule.title }}</strong>
-                  <p>{{ rule.body }}</p>
-                </div>
-                {% endfor %}
-              </div>
+          <aside class="stats">
+            <div class="stat">
+              <div class="meta-label">Sources scanned</div>
+              <strong>{{ issue.sources_scanned }}</strong>
             </div>
-          </article>
+            <div class="stat">
+              <div class="meta-label">Articles read</div>
+              <strong>{{ issue.articles_read }}</strong>
+            </div>
+            <div class="stat">
+              <div class="meta-label">Published</div>
+              <strong>{{ issue.time }}</strong>
+            </div>
+          </aside>
+        </section>
 
-          <article class="panel">
-            <div class="inner">
-              <div class="section-title">
-                <h2>Issue metadata</h2>
-                <span>archive + trust layer</span>
+        <section class="panel">
+          <div class="inner">
+            <div class="section-title">
+              <h2>Signals</h2>
+              <span>supporting reads</span>
+            </div>
+            <div class="signals">
+              {% for signal in signals %}
+              <article class="signal">
+                <div class="signal-top">
+                  <div>
+                    <h3>
+                      {% if signal.url %}
+                      <a href="{{ signal.url }}" target="_blank" rel="noopener noreferrer">{{ signal.headline }}</a>
+                      {% else %}
+                      {{ signal.headline }}
+                      {% endif %}
+                    </h3>
+                    <span class="signal-source">{{ signal.source }}</span>
+                  </div>
+                  <span class="tag tag--{{ signal.tag }}">{{ signal.tag_label }}</span>
+                </div>
+                <p>{{ signal.take }}</p>
+              </article>
+              {% else %}
+              <article class="signal">
+                <p>No supporting signals in this issue.</p>
+              </article>
+              {% endfor %}
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="inner">
+            <div class="section-title">
+              <h2>Radar</h2>
+              <span>watch over time</span>
+            </div>
+            <ul class="radar">
+              {% for item in radar %}
+              <li>{{ item }}</li>
+              {% else %}
+              <li>No radar items in this issue.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="inner">
+            <div class="section-title">
+              <h2>One move today</h2>
+              <span>concrete next action</span>
+            </div>
+            <div class="one-move">
+              <p>{{ one_move }}</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="inner">
+            <div class="section-title">
+              <h2>Issue metadata</h2>
+              <span>archive</span>
+            </div>
+            <div class="metadata">
+              <div class="meta-item">
+                <div class="meta-label">Date</div>
+                <strong>{{ metadata.date }}</strong>
               </div>
-              <div class="meta-grid">
-                <div class="meta-item">
-                  <div class="eyebrow">Date</div>
-                  <strong>{{ metadata.date }}</strong>
-                  <p>Morning edition</p>
-                </div>
-                <div class="meta-item">
-                  <div class="eyebrow">Published</div>
-                  <strong>{{ metadata.published }}</strong>
-                  <p>Local-time stamp</p>
-                </div>
-                <div class="meta-item">
-                  <div class="eyebrow">Source window</div>
-                  <strong>{{ metadata.source_window }}</strong>
-                  <p>Recency-bounded inputs</p>
-                </div>
-                <div class="meta-item">
-                  <div class="eyebrow">Issue ID</div>
-                  <strong>{{ metadata.issue_id }}</strong>
-                  <p>Persistent archive key</p>
-                </div>
+              <div class="meta-item">
+                <div class="meta-label">Published</div>
+                <strong>{{ metadata.published }}</strong>
               </div>
-              <div class="footer-note">
-                <p><strong>Archive note:</strong> {{ footer_note }}</p>
+              <div class="meta-item">
+                <div class="meta-label">Issue number</div>
+                <strong>{{ '%03d' % metadata.issue_number }}</strong>
               </div>
             </div>
-          </article>
+            <div class="footer-note">
+              <p>{{ footer_note }}</p>
+            </div>
+          </div>
         </section>
       </div>
 
       <div class="footrail">
         <div class="rail-group">
           <span>{{ footrail.version }}</span>
-          <span>{{ footrail.traits }}</span>
+          <span>editorial json renderer</span>
         </div>
         <div class="rail-group">
           {% for tag in footrail.tags %}

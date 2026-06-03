@@ -1,152 +1,157 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Mapping, Sequence
 
-from .config import load_config, load_momentum
-from .gather import Article, gather
-from .rank import rank
+from .config import load_config
 from .render import render
 
 
-_DEMO_ARTICLES: tuple[dict[str, Any], ...] = (
-    {
-        "title": "Hermes agents get calmer tool memory and recovery loops",
-        "url": "https://example.com/hermes-memory",
-        "source": "Example Labs",
-        "description": "Agent runs are getting more dependable because retry logic, memory, and browser handoffs are being treated as product features rather than incidental glue.",
-        "content_text": "Hermes agents memory tool use browser workflows recovery loops automation reliability daily operations.",
-        "date": "2026-06-03T11:00:00+00:00",
-        "topics": ["hermes", "agents", "memory", "tooling"],
+_DEMO_EDITORIAL: dict[str, Any] = {
+    "issue": {
+        "number": 1,
+        "date": "June 5, 2026",
+        "time": "6:30 AM PT",
+        "sources_scanned": 28,
+        "articles_read": 9,
     },
-    {
-        "title": "CLI-first automation stacks are replacing one-off demo scaffolds",
-        "url": "https://example.com/cli-automation",
-        "source": "Builder Weekly",
-        "description": "Developer workflows are consolidating around portable CLI tools, orchestration scripts, and repeatable local automation.",
-        "content_text": "developer workflows cli tooling automation scripts orchestration portable local operations.",
-        "date": "2026-06-03T08:20:00+00:00",
-        "topics": ["developer", "tooling", "automation", "cli"],
+    "top_story": {
+        "headline": "Example of today's top story with a real headline",
+        "source": "Example Publication",
+        "url": "https://example.com/article",
+        "take": "Example personal take explaining why this matters for the reader's build.",
+        "tag": "adopt",
+        "why_now": "Example timing context explaining why this is relevant now.",
     },
-    {
-        "title": "New model launches matter less than latency, price, and tool behavior",
-        "url": "https://example.com/model-landscape",
-        "source": "Inference Report",
-        "description": "Benchmarks still move headlines, but product teams are filtering models through cost, latency, and tool-call quality first.",
-        "content_text": "models pricing context windows benchmarks inference latency tool calls deployment tradeoffs.",
-        "date": "2026-06-03T07:45:00+00:00",
-        "topics": ["models", "benchmarks", "pricing"],
-    },
-    {
-        "title": "Product builders are packaging AI features as disciplined daily loops",
-        "url": "https://example.com/product-loops",
-        "source": "Indie Product Notes",
-        "description": "The strongest AI products are narrowing around recurring operator actions instead of sprawling feature collections.",
-        "content_text": "product building shipping design workflow leverage indie development daily loop experiments.",
-        "date": "2026-06-02T22:00:00+00:00",
-        "topics": ["product", "shipping", "build"],
-    },
-    {
-        "title": "Voice agents are improving, but workflow fit still decides adoption",
-        "url": "https://example.com/voice-fit",
-        "source": "Audio Futures",
-        "description": "Speech quality is rising quickly, yet teams still need clear reasons to insert voice into real operator workflows.",
-        "content_text": "voice audio agents speech interfaces workflow fit adoption tts transcription.",
-        "date": "2026-06-02T18:30:00+00:00",
-        "topics": ["voice", "audio"],
-    },
-    {
-        "title": "Video generation tooling is getting more usable for fast concept work",
-        "url": "https://example.com/video-gen",
-        "source": "Visual Systems",
-        "description": "ComfyUI-style pipelines are becoming practical for quick internal concept passes even if they are still too messy for broad deployment.",
-        "content_text": "video generation comfyui diffusion workflow concept art tooling experimentation.",
-        "date": "2026-06-02T16:10:00+00:00",
-        "topics": ["video", "visual", "comfyui"],
-    },
-)
-
-_DEFAULT_MOMENTUM = {
-    "hermetic_agents": 1.0,
-    "dev_tooling": 0.8,
-    "product_building": 0.6,
+    "signals": [
+        {
+            "headline": "Example signal item with a clear title",
+            "source": "Source Name",
+            "url": "https://example.com/signal",
+            "take": "Example one-sentence take with personal relevance.",
+            "tag": "try",
+        },
+        {
+            "headline": "Another example signal with different tag",
+            "source": "Another Source",
+            "url": "https://example.com/signal2",
+            "take": "Example take showing how this connects to the reader's stack.",
+            "tag": "track",
+        },
+        {
+            "headline": "Example for background context",
+            "source": "Industry News",
+            "url": "https://example.com/signal3",
+            "take": "Example contextual note with no immediate action required.",
+            "tag": "note",
+        },
+    ],
+    "radar": [
+        "Example radar item — a trend worth watching over time",
+        "Another radar item with context about its significance",
+    ],
+    "one_move": "Example concrete next action to take today, with rationale.",
 }
 
 
 def build(
     config_path: str | Path = "config.yaml",
-    momentum_path: str | Path | None = "momentum.json",
+    editorial_json_path: str | Path | None = None,
+    editorial: Mapping[str, Any] | None = None,
+    articles: Sequence[Mapping[str, Any]] | None = None,
     articles_path: str | Path | None = None,
-    search_fn=None,
-    extract_fn=None,
     demo: bool = False,
+    **_unused_compat: Any,
 ) -> str:
     config = load_config(config_path)
-    momentum = load_momentum(momentum_path)
-    if demo and not momentum:
-        momentum = dict(_DEFAULT_MOMENTUM)
-
-    if demo:
-        search_fn = _demo_search
-        extract_fn = _demo_extract
-
-    if articles_path:
-        articles = _load_articles(Path(articles_path))
-    elif search_fn is not None and extract_fn is not None:
-        articles = gather(config.search_queries, search_fn=search_fn, extract_fn=extract_fn)
+    if editorial is not None:
+        payload = dict(editorial)
+    elif editorial_json_path is not None:
+        payload = _load_editorial_json(Path(editorial_json_path))
+    elif demo:
+        payload = copy.deepcopy(_DEMO_EDITORIAL)
+    elif articles is not None:
+        payload = _editorial_from_articles(articles)
+    elif articles_path is not None:
+        payload = _editorial_from_articles(_load_articles(Path(articles_path)))
     else:
-        raise ValueError("Production mode requires either --articles-file or injected search_fn and extract_fn callbacks.")
-
-    ranked_articles = rank(articles, config, momentum=momentum)
-    return render(ranked_articles, config, momentum=momentum)
+        raise ValueError("Provide --editorial-json FILE or use --demo.")
+    return render(payload, config=config)
 
 
-def _load_articles(path: Path) -> list[Article]:
-    """Load articles from a JSON file. Expects a list of dicts with fields:
-    title, url, source, description, content_text, date (optional)."""
+def _load_editorial_json(path: Path) -> dict[str, Any]:
     try:
-        with open(path, encoding="utf-8") as f:
-            raw = json.load(f)
-        return [
-            Article(
-                title=str(item.get("title", "")),
-                url=str(item.get("url", "")),
-                source=str(item.get("source", "")),
-                description=str(item.get("description", "")),
-                content_text=str(item.get("content_text", "")),
-                date=str(item["date"]) if item.get("date") else None,
-            )
-            for item in raw
-        ]
-    except (OSError, TypeError, AttributeError, json.JSONDecodeError) as exc:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, TypeError) as exc:
+        print(f"Warning: could not load editorial JSON from {path}: {exc}", file=sys.stderr)
+        return copy.deepcopy(_DEMO_EDITORIAL)
+    if not isinstance(raw, dict):
+        print(f"Warning: could not load editorial JSON from {path}: expected an object", file=sys.stderr)
+        return copy.deepcopy(_DEMO_EDITORIAL)
+    return raw
+
+
+def _load_articles(path: Path) -> list[dict[str, Any]]:
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, TypeError) as exc:
         print(f"Warning: could not load articles from {path}: {exc}", file=sys.stderr)
         return []
+    if not isinstance(raw, list):
+        return []
+    return [dict(item) for item in raw if isinstance(item, Mapping)]
+
+
+def _editorial_from_articles(articles: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    editorial = copy.deepcopy(_DEMO_EDITORIAL)
+    if not articles:
+        return editorial
+    lead = articles[0]
+    editorial["top_story"] = _article_to_story(lead, "adopt")
+    editorial["signals"] = [_article_to_story(article, "try") for article in articles[1:7]]
+    editorial["issue"]["articles_read"] = len(articles)
+    editorial["issue"]["sources_scanned"] = len({str(article.get("source", "")) for article in articles if article.get("source")})
+    return editorial
+
+
+def _article_to_story(article: Mapping[str, Any], tag: str) -> dict[str, str]:
+    description = str(article.get("description") or article.get("content_text") or "").strip()
+    return {
+        "headline": str(article.get("title") or "Untitled source").strip(),
+        "source": str(article.get("source") or "Unknown source").strip(),
+        "url": str(article.get("url") or "https://example.com").strip(),
+        "take": description or "Source supplied without an editorial take.",
+        "tag": tag,
+    }
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build the Morning AI Briefing HTML artifact.")
     parser.add_argument("--config", default="config.yaml", help="Path to the YAML config file.")
-    parser.add_argument("--momentum", default="momentum.json", help="Path to the optional momentum JSON file.")
-    parser.add_argument("--demo", action="store_true", help="Use built-in sample content instead of injected callbacks.")
-    parser.add_argument("--articles-file", type=str, default=None, help="Path to a JSON file with pre-collected articles (bypasses gather).")
+    parser.add_argument("--editorial-json", type=str, default=None, help="Path to editorial JSON to render.")
+    parser.add_argument("--demo", action="store_true", help="Render built-in sample editorial content.")
+    parser.add_argument("--articles-file", type=str, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--output", type=str, default=None, help="Write HTML to FILE atomically instead of stdout.")
     args = parser.parse_args(argv)
 
     html = build(
         config_path=args.config,
-        momentum_path=args.momentum,
+        editorial_json_path=args.editorial_json,
         articles_path=args.articles_file,
         demo=args.demo,
     )
     if args.output:
         _write_atomic(Path(args.output), html)
     else:
-        print(html)
+        sys.stdout.write(html)
+        if not html.endswith("\n"):
+            sys.stdout.write("\n")
     return 0
 
 
@@ -166,53 +171,10 @@ def _write_atomic(path: Path, content: str) -> None:
             temp_file.write(content)
             temp_file.flush()
             os.fsync(temp_file.fileno())
-        os.rename(temp_path, path)
+        os.replace(temp_path, path)
     finally:
         if temp_path and os.path.exists(temp_path):
             os.unlink(temp_path)
-
-
-def _demo_search(query: str) -> list[dict[str, Any]]:
-    query_text = query.lower()
-    matches = []
-    for article in _DEMO_ARTICLES:
-        haystack = " ".join(article["topics"]) + " " + article["title"].lower() + " " + article["description"].lower()
-        if any(token in haystack for token in query_text.split()):
-            matches.append(
-                {
-                    "title": article["title"],
-                    "url": article["url"],
-                    "source": article["source"],
-                    "description": article["description"],
-                    "date": article["date"],
-                }
-            )
-    return matches or [
-        {
-            "title": article["title"],
-            "url": article["url"],
-            "source": article["source"],
-            "description": article["description"],
-            "date": article["date"],
-        }
-        for article in _DEMO_ARTICLES[:3]
-    ]
-
-
-def _demo_extract(urls: Sequence[str]) -> dict[str, dict[str, Any]]:
-    lookup = {article["url"]: article for article in _DEMO_ARTICLES}
-    return {
-        url: {
-            "url": url,
-            "title": lookup[url]["title"],
-            "source": lookup[url]["source"],
-            "description": lookup[url]["description"],
-            "content_text": lookup[url]["content_text"],
-            "date": lookup[url]["date"],
-        }
-        for url in urls
-        if url in lookup
-    }
 
 
 if __name__ == "__main__":
