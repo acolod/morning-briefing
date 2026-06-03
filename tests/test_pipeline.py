@@ -15,7 +15,8 @@ class MorningBriefingPipelineTests(unittest.TestCase):
         self.assertIn("Morning AI Brief", html)
         self.assertIn("Top signals", html)
         self.assertIn("Issue metadata", html)
-        self.assertIn("Article image mock slot", html)
+        self.assertIn("Story treatment", html)
+        self.assertIn("Read next", html)
 
     def test_rank_includes_category_annotations(self) -> None:
         config = load_config(Path("config.yaml"))

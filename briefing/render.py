@@ -40,66 +40,23 @@ def render(
             "source_window": config.render.source_window,
         },
         "hero_cards": _hero_cards(top_articles, rising_name),
-        "signals": [
-            {
-                "number": f"{index:02d}",
-                "headline": article.article.title,
-                "url": article.article.url,
-                "tag": _signal_tag(article),
-                "why": _why_it_matters(article),
-            }
-            for index, article in enumerate(top_articles, start=1)
-        ],
+        "signals": _signals(top_articles),
         "build_journey": _build_journey(top_categories, top_articles),
         "rising_topic": {
             "name": _label_for_category(rising_name),
-            "body": _rising_body(rising_name, momentum.get(rising_name, 0.0), top_categories),
+            "body": _rising_body(rising_name, momentum.get(rising_name, 0.0), top_categories, top_articles),
         },
-        "rising_details": [
-            {
-                "eyebrow": "Weighting",
-                "title": "Stable interests + recent mentions + follow-up depth - decay",
-                "body": "The score blends static preferences with recency and momentum so the brief can visibly rebalance without losing its core lanes.",
-            },
-            {
-                "eyebrow": "Effect",
-                "title": "Changes the sources, section order, and suggested experiments",
-                "body": "The ranking should shift what rises, what stays persistent, and what is framed as worth testing today.",
-            },
-        ],
+        "rising_details": _rising_details(rising_name, momentum.get(rising_name, 0.0), top_categories, top_articles),
         "radar_items": _radar_items(articles),
         "moves": _moves(top_articles, rising_name),
-        "image_treatment": {
-            "rule_title": "Use at most one or two visuals in an issue.",
-            "rule_body": "Good candidates: a compact article image, chart crop, product screenshot, or a restrained abstract illustration that supports the lead theme.",
-            "placement_title": "Best slots are the top-right rail or a mid-page story callout.",
-            "placement_body": "That keeps the page feeling premium and alive without turning the brief into a thumbnail feed.",
-            "article_slot_eyebrow": "Article image mock slot",
-            "article_slot_title": "Example of a tiny extracted visual card.",
-            "article_slot_body": "A production version can pull a clean source image from the most relevant article or fall back to an abstract visual if the source art is noisy.",
-        },
-        "delivery_path": [
-            "Hosted HTML artifact + Telegram link",
-            "Attachment fallback while setup is still local",
-            "Email only as a secondary archive channel later",
-        ],
-        "visual_rules": [
-            {
-                "eyebrow": "Tone",
-                "title": "Polished first, retro second.",
-                "body": "The aesthetic can nod to terminal energy without sacrificing a calm, modern reading experience.",
-            },
-            {
-                "eyebrow": "Scale",
-                "title": "Titles stay strong without becoming oversized posters.",
-                "body": "More premium desktop briefing, less giant splash screen.",
-            },
-        ],
+        "image_treatment": _image_treatment(top_articles),
+        "delivery_path": _delivery_path(top_articles),
+        "visual_rules": _visual_rules(top_articles),
         "metadata": {
             "date": now.strftime("%B %-d, %Y"),
             "published": now.strftime("%-I:%M %p %Z"),
             "source_window": config.render.source_window,
-            "issue_id": "#001",
+            "issue_id": f"#{now.strftime('%Y%m%d')}",
         },
         "toprail": {
             "path": f"/briefs/{now.strftime('%Y-%m-%d')}",
@@ -107,22 +64,15 @@ def render(
             "mode": "builder",
             "signals_count": str(len(top_articles)),
             "delivery": "html-first",
-            "assets": "restrained",
+            "assets": _asset_label(top_articles),
         },
         "footrail": {
             "version": "production v1",
-            "traits": "dense / polished / adaptive / image-light",
-            "tags": ["standalone html", "subtle motion", "dated footer", "mobile-openable"],
+            "traits": _footrail_traits(top_categories),
+            "tags": _footrail_tags(top_articles),
         },
-        "visual_note": {
-            "title": "Article-style visuals are the better fit here.",
-            "body": "This keeps the image treatment feeling native to the briefing instead of looking like a detached hero asset or broken attachment.",
-        },
-        "metadata_idea": {
-            "title": "Each issue should stamp its timing and input window clearly.",
-            "body": "Date, publish time, timezone, source window, and issue ID make the brief feel archival and trustworthy.",
-        },
-        "footer_note": config.render.footer_note,
+        "side_stack": _side_stack(top_articles, top_categories),
+        "footer_note": _footer_note(config.render.footer_note, top_articles),
         "title": config.render.title,
     }
 
@@ -158,38 +108,74 @@ def _lede(articles: list[RankedArticle]) -> str:
 def _theme_line(articles: list[RankedArticle]) -> str:
     if not articles:
         return "The best morning issue is the one that reduces drag and clarifies what deserves attention right now."
-    categories = ", ".join(_label_for_category(article.category) for article in articles[:3])
-    return f"The highest-leverage signal today sits in {categories.lower()}, where practical workflow value matters more than novelty for its own sake."
+    categories = _join_human([_label_for_category(article.category).lower() for article in articles[:3]])
+    sources = _join_human([_source(article) for article in articles[:2]])
+    return f"Today's strongest thread connects {categories}; start with {sources} before widening the read."
 
 
 def _hero_cards(articles: list[RankedArticle], rising_name: str) -> list[dict[str, str]]:
-    lead = articles[0] if articles else None
-    return [
+    if not articles:
+        return [
+            {
+                "eyebrow": "No inputs",
+                "title": "No articles landed in this run.",
+                "body": "The brief rendered cleanly, but it needs a fresh article batch before it can make an editorial call.",
+            }
+        ]
+
+    cards: list[dict[str, str]] = []
+    for article in articles[:2]:
+        cards.append(
+            {
+                "eyebrow": f"{_signal_tag(article)} // {_source(article)}",
+                "title": article.article.title,
+                "body": f"{_summary(article, 132)} Matched {_keyword_phrase(article)}; score {article.score:.2f}.",
+            }
+        )
+
+    category_count = Counter(article.category for article in articles)
+    category, count = category_count.most_common(1)[0]
+    sources = _join_human([_source(article) for article in articles[:3]])
+    cards.append(
         {
-            "eyebrow": "Top lane",
-            "title": lead.article.title if lead else "Reliability over raw novelty.",
-            "body": "Make the first screen answer what is worth testing today, not just what happened.",
-        },
-        {
-            "eyebrow": "Adaptive lane",
-            "title": f"{_label_for_category(rising_name)} is shaping the brief.",
-            "body": "Momentum should rise quickly when a topic keeps surfacing, then cool off naturally when attention moves elsewhere.",
-        },
-        {
-            "eyebrow": "Delivery lane",
-            "title": "The artifact is the product.",
-            "body": "HTML carries the full reading surface while messaging remains a nudge and deep-link, not the main canvas.",
-        },
-    ]
+            "eyebrow": "Today's shape",
+            "title": f"{_label_for_category(rising_name)} is the pressure point.",
+            "body": f"{_label_for_category(category)} appears in {count} of {len(articles)} top signals, with evidence from {sources}.",
+        }
+    )
+    return cards[:3]
+
+
+def _signals(articles: list[RankedArticle]) -> list[dict[str, str | None]]:
+    signals = []
+    for index, article in enumerate(articles, start=1):
+        signals.append(
+            {
+                "number": f"{index:02d}",
+                "headline": article.article.title,
+                "url": _real_url(article.article.url),
+                "tag": _signal_tag(article),
+                "why": _why_it_matters(article),
+            }
+        )
+    return signals
 
 
 def _build_journey(top_categories: Counter[str], articles: list[RankedArticle]) -> list[str]:
     bullets: list[str] = []
-    for category, _count in top_categories.most_common(3):
-        bullets.append(f"Keep {_label_for_category(category).lower()} visible as a persistent lane while the brief adapts around current spikes.")
     if articles:
-        bullets.append(f"Promote action labels clearly: {_signal_tag(articles[0]).lower()} {articles[0].article.source} before adding more links.")
-    bullets.append("Use fewer, better links so curation feels intentional rather than exhaustive.")
+        lead = articles[0]
+        bullets.append(
+            f"Start with {_source(lead)}: turn '{_clip(lead.article.title, 72)}' into one concrete check before opening the rest of the queue."
+        )
+    for category, count in top_categories.most_common(3):
+        bullets.append(
+            f"Give {_label_for_category(category).lower()} {count} slot{'s' if count != 1 else ''}; that is where today's article mix is clustering."
+        )
+    if len(articles) > 1:
+        bullets.append(
+            f"Use {_source(articles[1])} as the counterweight so the issue does not overfit to the lead source."
+        )
     return bullets[:4]
 
 
@@ -203,6 +189,7 @@ def _radar_items(articles: list[RankedArticle]) -> list[dict[str, str]]:
             {
                 "eyebrow": "Radar",
                 "title": article.article.title,
+                "url": _real_url(article.article.url),
                 "body": _why_it_matters(article),
             }
         )
@@ -212,27 +199,34 @@ def _radar_items(articles: list[RankedArticle]) -> list[dict[str, str]]:
 def _moves(articles: list[RankedArticle], rising_name: str) -> list[dict[str, str]]:
     lead = articles[0] if articles else None
     follow = articles[1] if len(articles) > 1 else lead
+    follow_category = _label_for_category(follow.category).lower() if follow else _label_for_category(rising_name).lower()
+    follow_source = _source(follow) if follow else "the second source"
+    follow_keywords = _keyword_phrase(follow) if follow else _label_for_category(rising_name).lower()
     return [
         {
-            "eyebrow": "Build path",
-            "title": "Ship the first automated loop before overbuilding controls.",
-            "body": f"Gather sources, score them, render the HTML artifact, and validate against {lead.article.title if lead else 'your top lane'} before widening the surface.",
+            "eyebrow": f"{_signal_tag(lead) if lead else 'Check'} today",
+            "title": f"Pressure-test {_clip(lead.article.title, 82) if lead else _label_for_category(rising_name)}.",
+            "url": _real_url(lead.article.url) if lead else None,
+            "body": f"Use {_source(lead) if lead else 'the lead source'} as the source of truth, then decide whether this belongs in the next build cycle.",
         },
         {
-            "eyebrow": "Learn next",
-            "title": f"Study the ranking dynamics around {_label_for_category(rising_name).lower()}.",
-            "body": f"Use {follow.article.title if follow else 'the lead signal'} as the next test case for recency and momentum tuning.",
+            "eyebrow": "Compare next",
+            "title": f"Read the {follow_category} angle from {follow_source}.",
+            "url": _real_url(follow.article.url) if follow else None,
+            "body": f"Matched {follow_keywords}; use it to separate durable pattern from one-off headline.",
         },
     ]
 
 
 def _why_it_matters(article: RankedArticle) -> str:
-    if article.article.description.strip():
-        return article.article.description.strip().rstrip(".") + "."
-    snippet = article.article.content_text.strip().split(".")[0].strip()
-    if snippet:
-        return snippet.rstrip(".") + "."
-    return f"This signal is strongest in {_label_for_category(article.category).lower()} and scored {article.score:.2f} in the current pass."
+    summary = _summary(article, 210)
+    metadata = (
+        f"{_source(article)} landed in {_label_for_category(article.category).lower()} "
+        f"with {_keyword_phrase(article)} matched, age {_freshness(article)}, score {article.score:.2f}."
+    )
+    if summary:
+        return f"{summary} {metadata}"
+    return metadata
 
 
 def _signal_tag(article: RankedArticle) -> str:
@@ -257,14 +251,268 @@ def _rising_category(momentum: dict[str, float], top_categories: Counter[str]) -
     return "general_ai"
 
 
-def _rising_body(category: str, momentum_score: float, top_categories: Counter[str]) -> str:
+def _rising_body(
+    category: str,
+    momentum_score: float,
+    top_categories: Counter[str],
+    articles: list[RankedArticle],
+) -> str:
     base = f"{_label_for_category(category)} is the strongest adaptive lane right now"
+    related = [article for article in articles if article.category == category] or articles[:2]
+    evidence = _join_human([_source(article) for article in related[:3]])
     if momentum_score:
-        return f"{base}, with momentum {momentum_score:.2f}. Keep that topic visible while it still changes what is worth testing, tracking, or ignoring."
+        return f"{base}, with momentum {momentum_score:.2f} and fresh evidence from {evidence}."
     if top_categories:
-        return f"{base}, based on the current article mix. The section should expand when the topic stays sticky and cool off naturally when it fades."
-    return f"{base}. This module proves the brief is alive rather than pinned to a static taxonomy forever."
+        count = top_categories.get(category, 0)
+        return f"{base}, based on {count or len(related)} current signal{'s' if (count or len(related)) != 1 else ''} from {evidence}."
+    return f"{base}, but there were no ranked articles to explain the movement."
 
 
 def _label_for_category(name: str) -> str:
     return name.replace("_", " ").title()
+
+
+def _rising_details(
+    category: str,
+    momentum_score: float,
+    top_categories: Counter[str],
+    articles: list[RankedArticle],
+) -> list[dict[str, str]]:
+    related = [article for article in articles if article.category == category] or articles[:2]
+    lead = related[0] if related else None
+    count = top_categories.get(category, len(related))
+    details = [
+        {
+            "eyebrow": "Why it rose",
+            "title": f"{count or 0} top signal{'s' if (count or 0) != 1 else ''} point at {_label_for_category(category).lower()}.",
+            "body": (
+                f"The clearest evidence is {_source(lead)} on '{_clip(lead.article.title, 86)}', "
+                f"with {_keyword_phrase(lead)} matched."
+                if lead
+                else "No article evidence was available in this run."
+            ),
+        },
+        {
+            "eyebrow": "Momentum",
+            "title": f"Current carryover is {momentum_score:.2f}.",
+            "body": (
+                "The lane is both in the stored momentum file and present in today's ranked articles."
+                if momentum_score and count
+                else "The lane is being pulled mainly by today's article mix, not older carryover."
+            ),
+        },
+    ]
+    if len(related) > 1:
+        details.append(
+            {
+                "eyebrow": "Second proof",
+                "title": _clip(related[1].article.title, 88),
+                "body": f"{_source(related[1])} gives the backup read; score {related[1].score:.2f}, age {_freshness(related[1])}.",
+            }
+        )
+    return details[:3]
+
+
+def _image_treatment(articles: list[RankedArticle]) -> dict[str, str]:
+    lead = articles[0] if articles else None
+    support = articles[1] if len(articles) > 1 else lead
+    if lead is None:
+        return {
+            "heading": "Story treatment",
+            "kicker": "waiting for articles",
+            "rule_eyebrow": "Lead evidence",
+            "rule_title": "No article is available to anchor the issue.",
+            "rule_body": "The renderer keeps this slot quiet until the gather step supplies a real source and URL.",
+            "placement_eyebrow": "Backup read",
+            "placement_title": "No secondary source was ranked.",
+            "placement_body": "Once articles arrive, this module should explain why the second read changes the lead.",
+            "article_slot_eyebrow": "Evidence cue",
+            "article_slot_title": "Waiting for a source-backed visual.",
+            "article_slot_body": "The issue needs a real article before a visual treatment can be chosen.",
+        }
+    return {
+        "heading": "Story treatment",
+        "kicker": f"{_source(lead)} lead",
+        "rule_eyebrow": "Lead evidence",
+        "rule_title": f"Anchor the issue on {_possessive(_source(lead))} {_label_for_category(lead.category).lower()} signal.",
+        "rule_body": f"{_summary(lead, 170)} The strongest visual cue is {_keyword_phrase(lead)}, not generic AI imagery.",
+        "placement_eyebrow": "Contrast",
+        "placement_title": f"Use {_source(support) if support else _source(lead)} to widen the read.",
+        "placement_body": (
+            f"Pair the lead with '{_clip(support.article.title, 96)}' so the page shows both the headline claim and the practical consequence."
+            if support
+            else "No second article ranked high enough to create a contrast module."
+        ),
+        "article_slot_eyebrow": f"{_source(lead)} cue",
+        "article_slot_title": _clip(lead.article.title, 96),
+        "article_slot_body": f"Represent {_keyword_phrase(lead)} as compact evidence: source, category, score {lead.score:.2f}, and one sentence of context.",
+    }
+
+
+def _delivery_path(articles: list[RankedArticle]) -> list[dict[str, str]]:
+    links = []
+    for article in articles[:3]:
+        url = _real_url(article.article.url)
+        if not url:
+            continue
+        links.append(
+            {
+                "label": f"Read {_source(article)}",
+                "url": url,
+                "body": _clip(article.article.title, 92),
+            }
+        )
+    return links
+
+
+def _visual_rules(articles: list[RankedArticle]) -> list[dict[str, str]]:
+    if not articles:
+        return [
+            {
+                "eyebrow": "Empty run",
+                "title": "Keep the page sparse until real sources arrive.",
+                "body": "A daily brief should not invent detail when the article batch is empty.",
+            }
+        ]
+    lead = articles[0]
+    rules = [
+        {
+            "eyebrow": _signal_tag(lead),
+            "title": f"Lead with {_source(lead)} because it scored {lead.score:.2f}.",
+            "body": f"The matched terms are {_keyword_phrase(lead)}, which explains why this story outranks the rest of the queue.",
+        }
+    ]
+    if len(articles) > 1:
+        second = articles[1]
+        rules.append(
+            {
+                "eyebrow": _label_for_category(second.category),
+                "title": f"Keep {_source(second)} visible as the second read.",
+                "body": f"It adds {_keyword_phrase(second)} and keeps the briefing from becoming a single-source summary.",
+            }
+        )
+    if len(articles) > 2:
+        third = articles[2]
+        rules.append(
+            {
+                "eyebrow": "Decision",
+                "title": f"Use {_signal_tag(third).lower()} framing for {_source(third)}.",
+                "body": f"The article is {_freshness(third)} old and belongs in {_label_for_category(third.category).lower()}, so it should be read after the top two.",
+            }
+        )
+    return rules[:3]
+
+
+def _side_stack(articles: list[RankedArticle], top_categories: Counter[str]) -> list[dict[str, str | bool]]:
+    lead = articles[0] if articles else None
+    sources = _join_human([_source(article) for article in articles[:4]])
+    category = top_categories.most_common(1)[0][0] if top_categories else "general_ai"
+    source_count = len({_source(article) for article in articles})
+    return [
+        {
+            "eyebrow": f"{_source(lead) if lead else 'No source'} cue",
+            "title": _clip(lead.article.title, 96) if lead else "Waiting on today's lead article.",
+            "body": (
+                f"Score {lead.score:.2f}; matched {_keyword_phrase(lead)}; category {_label_for_category(lead.category).lower()}."
+                if lead
+                else "The side rail will fill from the highest-ranked article once inputs are available."
+            ),
+            "visual": True,
+            "sparkline": False,
+        },
+        {
+            "eyebrow": "Source mix",
+            "title": f"{source_count} source{'s' if source_count != 1 else ''} in the lead set.",
+            "body": f"Today's visible read comes from {sources or 'no ranked sources yet'}.",
+            "visual": False,
+            "sparkline": False,
+        },
+        {
+            "eyebrow": "Signal shape",
+            "title": f"{_label_for_category(category)} is the densest cluster.",
+            "body": f"Tags come from score and category: {_join_human([_signal_tag(article) for article in articles[:3]]) or 'none yet'}.",
+            "visual": False,
+            "sparkline": True,
+        },
+    ]
+
+
+def _footer_note(default_note: str, articles: list[RankedArticle]) -> str:
+    if not articles:
+        return default_note
+    lead = articles[0]
+    return (
+        f"Archived with {_source(lead)} as the lead source, {_label_for_category(lead.category).lower()} as the top category, "
+        f"and {_keyword_phrase(lead)} as the matched evidence."
+    )
+
+
+def _asset_label(articles: list[RankedArticle]) -> str:
+    return f"{len(articles[:3])} story cues" if articles else "no story cues"
+
+
+def _footrail_traits(top_categories: Counter[str]) -> str:
+    if not top_categories:
+        return "empty input / archived / html-first"
+    return " / ".join(_label_for_category(category).lower() for category, _count in top_categories.most_common(3))
+
+
+def _footrail_tags(articles: list[RankedArticle]) -> list[str]:
+    tags = []
+    for article in articles[:4]:
+        tags.append(f"{_signal_tag(article).lower()} {article.score:.1f}")
+    return tags or ["no ranked articles", "metadata kept", "html-first"]
+
+
+def _source(article: RankedArticle) -> str:
+    return article.article.source.strip() or "Unknown source"
+
+
+def _possessive(text: str) -> str:
+    return f"{text}'" if text.endswith("s") else f"{text}'s"
+
+
+def _summary(article: RankedArticle, limit: int) -> str:
+    text = article.article.description.strip() or article.article.content_text.strip()
+    return _clip(text.rstrip(".") + "." if text else "", limit)
+
+
+def _keyword_phrase(article: RankedArticle) -> str:
+    if article.matched_keywords:
+        return ", ".join(article.matched_keywords[:4])
+    return _label_for_category(article.category).lower()
+
+
+def _freshness(article: RankedArticle) -> str:
+    if article.days_old < 0.05:
+        return "under an hour"
+    if article.days_old < 1:
+        hours = max(1, round(article.days_old * 24))
+        return f"{hours}h"
+    return f"{article.days_old:.1f}d"
+
+
+def _real_url(url: str) -> str | None:
+    text = url.strip()
+    if text.startswith(("https://", "http://")):
+        return text
+    return None
+
+
+def _clip(text: str, limit: int) -> str:
+    normalized = " ".join(text.split())
+    if len(normalized) <= limit:
+        return normalized
+    clipped = normalized[: limit - 3].rsplit(" ", 1)[0].rstrip(".,;:")
+    return f"{clipped}..."
+
+
+def _join_human(items: list[str]) -> str:
+    deduped = list(dict.fromkeys(item for item in items if item))
+    if not deduped:
+        return ""
+    if len(deduped) == 1:
+        return deduped[0]
+    if len(deduped) == 2:
+        return f"{deduped[0]} and {deduped[1]}"
+    return f"{', '.join(deduped[:-1])}, and {deduped[-1]}"

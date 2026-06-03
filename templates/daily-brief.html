@@ -243,6 +243,7 @@
     .signal p,
     .feature li,
     .linklist a,
+    .linklist small,
     .caption p,
     .meta-grid p,
     .footer-note p,
@@ -379,6 +380,15 @@
       text-decoration: underline;
     }
 
+    .module a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .module a:hover {
+      text-decoration: underline;
+    }
+
     .tag {
       display: inline-flex;
       align-items: center;
@@ -441,7 +451,8 @@
       gap: 12px;
     }
 
-    .linklist a {
+    .linklist a,
+    .linklist span {
       display: block;
       text-decoration: none;
       color: var(--accent-2);
@@ -449,7 +460,18 @@
       padding-top: 8px;
     }
 
-    .linklist a:first-child { border-top: 0; padding-top: 0; }
+    .linklist strong,
+    .linklist small {
+      display: block;
+    }
+
+    .linklist small {
+      margin-top: 4px;
+      color: var(--muted);
+    }
+
+    .linklist a:first-child,
+    .linklist span:first-child { border-top: 0; padding-top: 0; }
     .linklist a:hover { text-decoration: underline; }
 
     .sparkline {
@@ -523,7 +545,7 @@
     }
 
     .thumb::after {
-      content: 'Article visual';
+      content: '';
       position: absolute;
       left: 12px;
       bottom: 12px;
@@ -636,29 +658,28 @@
           </article>
 
           <aside class="side-stack">
-            <div class="metric visual-panel">
-              <div class="eyebrow">Visual note</div>
+            {% for item in side_stack %}
+            <div class="metric{% if item.visual %} visual-panel{% endif %}">
+              <div class="eyebrow">{{ item.eyebrow }}</div>
+              {% if item.visual %}
               <div class="visual-card">
                 <div class="thumb" aria-hidden="true"></div>
                 <div class="caption">
-                  <strong>{{ visual_note.title }}</strong>
-                  <p>{{ visual_note.body }}</p>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.body }}</p>
                 </div>
               </div>
-            </div>
-            <div class="metric">
-              <div class="eyebrow">Metadata idea</div>
-              <strong>{{ metadata_idea.title }}</strong>
-              <p>{{ metadata_idea.body }}</p>
-            </div>
-            <div class="metric">
-              <div class="eyebrow">Signal shape</div>
-              <strong>Semantic color, not decorative color.</strong>
-              <p>Amber for primary framing, blue for watch lanes, green for action, red for caution.</p>
+              {% else %}
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.body }}</p>
+              {% endif %}
+              {% if item.sparkline %}
               <div class="sparkline" aria-hidden="true">
                 <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
               </div>
+              {% endif %}
             </div>
+            {% endfor %}
           </aside>
         </section>
 
@@ -672,17 +693,17 @@
           <article class="panel">
             <div class="inner">
               <div class="section-title">
-                <h2>Image treatment</h2>
-                <span>small, intentional, optional</span>
+                <h2>{{ image_treatment.heading }}</h2>
+                <span>{{ image_treatment.kicker }}</span>
               </div>
               <div class="stack">
                 <div class="module">
-                  <div class="eyebrow">Rule</div>
+                  <div class="eyebrow">{{ image_treatment.rule_eyebrow }}</div>
                   <strong>{{ image_treatment.rule_title }}</strong>
                   <p>{{ image_treatment.rule_body }}</p>
                 </div>
                 <div class="module">
-                  <div class="eyebrow">Placement</div>
+                  <div class="eyebrow">{{ image_treatment.placement_eyebrow }}</div>
                   <strong>{{ image_treatment.placement_title }}</strong>
                   <p>{{ image_treatment.placement_body }}</p>
                 </div>
@@ -713,7 +734,13 @@
                   <div class="signal-top">
                     <div>
                       <small>Signal {{ signal.number }}</small>
-                      <h3><a href="{{ signal.url }}" target="_blank" rel="noopener noreferrer">{{ signal.headline }}</a></h3>
+                      <h3>
+                        {% if signal.url %}
+                        <a href="{{ signal.url }}" target="_blank" rel="noopener noreferrer">{{ signal.headline }}</a>
+                        {% else %}
+                        <span>{{ signal.headline }}</span>
+                        {% endif %}
+                      </h3>
                     </div>
                     <span class="tag {{ signal.tag | lower }}">{{ signal.tag }}</span>
                   </div>
@@ -774,7 +801,13 @@
                 {% for item in radar_items %}
                 <div class="module">
                   <div class="eyebrow">{{ item.eyebrow }}</div>
-                  <strong>{{ item.title }}</strong>
+                  <strong>
+                    {% if item.url %}
+                    <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+                    {% else %}
+                    {{ item.title }}
+                    {% endif %}
+                  </strong>
                   <p>{{ item.body }}</p>
                 </div>
                 {% endfor %}
@@ -792,7 +825,13 @@
                 {% for move in moves %}
                 <div class="module">
                   <div class="eyebrow">{{ move.eyebrow }}</div>
-                  <strong>{{ move.title }}</strong>
+                  <strong>
+                    {% if move.url %}
+                    <a href="{{ move.url }}" target="_blank" rel="noopener noreferrer">{{ move.title }}</a>
+                    {% else %}
+                    {{ move.title }}
+                    {% endif %}
+                  </strong>
                   <p>{{ move.body }}</p>
                 </div>
                 {% endfor %}
@@ -805,12 +844,17 @@
           <article class="panel">
             <div class="inner">
               <div class="section-title">
-                <h2>Delivery path</h2>
-                <span>recommended</span>
+                <h2>Read next</h2>
+                <span>source route</span>
               </div>
               <div class="linklist">
                 {% for item in delivery_path %}
-                <a href="#">{{ item }}</a>
+                <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">
+                    <strong>{{ item.label }}</strong>
+                    <small>{{ item.body }}</small>
+                  </a>
+                {% else %}
+                <span>No valid article URLs were available in this run.</span>
                 {% endfor %}
               </div>
             </div>
@@ -819,8 +863,8 @@
           <article class="panel">
             <div class="inner">
               <div class="section-title">
-                <h2>Visual rules</h2>
-                <span>v3 refinements</span>
+                <h2>Reading rules</h2>
+                <span>from today's articles</span>
               </div>
               <div class="stack">
                 {% for rule in visual_rules %}
@@ -863,7 +907,7 @@
                 </div>
               </div>
               <div class="footer-note">
-                <p><strong>Footer pattern recommendation:</strong> {{ footer_note }}</p>
+                <p><strong>Archive note:</strong> {{ footer_note }}</p>
               </div>
             </div>
           </article>
