@@ -1,7 +1,10 @@
 from __future__ import annotations
 
-import json
 import argparse
+import json
+import os
+import sys
+import tempfile
 from pathlib import Path
 from typing import Any, Sequence
 
@@ -106,19 +109,23 @@ def build(
 def _load_articles(path: Path) -> list[Article]:
     """Load articles from a JSON file. Expects a list of dicts with fields:
     title, url, source, description, content_text, date (optional)."""
-    with open(path) as f:
-        raw = json.load(f)
-    return [
-        Article(
-            title=str(item.get("title", "")),
-            url=str(item.get("url", "")),
-            source=str(item.get("source", "")),
-            description=str(item.get("description", "")),
-            content_text=str(item.get("content_text", "")),
-            date=str(item["date"]) if item.get("date") else None,
-        )
-        for item in raw
-    ]
+    try:
+        with open(path, encoding="utf-8") as f:
+            raw = json.load(f)
+        return [
+            Article(
+                title=str(item.get("title", "")),
+                url=str(item.get("url", "")),
+                source=str(item.get("source", "")),
+                description=str(item.get("description", "")),
+                content_text=str(item.get("content_text", "")),
+                date=str(item["date"]) if item.get("date") else None,
+            )
+            for item in raw
+        ]
+    except (OSError, TypeError, AttributeError, json.JSONDecodeError) as exc:
+        print(f"Warning: could not load articles from {path}: {exc}", file=sys.stderr)
+        return []
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -127,6 +134,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--momentum", default="momentum.json", help="Path to the optional momentum JSON file.")
     parser.add_argument("--demo", action="store_true", help="Use built-in sample content instead of injected callbacks.")
     parser.add_argument("--articles-file", type=str, default=None, help="Path to a JSON file with pre-collected articles (bypasses gather).")
+    parser.add_argument("--output", type=str, default=None, help="Write HTML to FILE atomically instead of stdout.")
     args = parser.parse_args(argv)
 
     html = build(
@@ -135,8 +143,33 @@ def main(argv: Sequence[str] | None = None) -> int:
         articles_path=args.articles_file,
         demo=args.demo,
     )
-    print(html)
+    if args.output:
+        _write_atomic(Path(args.output), html)
+    else:
+        print(html)
     return 0
+
+
+def _write_atomic(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path: str | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as temp_file:
+            temp_path = temp_file.name
+            temp_file.write(content)
+            temp_file.flush()
+            os.fsync(temp_file.fileno())
+        os.rename(temp_path, path)
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.unlink(temp_path)
 
 
 def _demo_search(query: str) -> list[dict[str, Any]]:

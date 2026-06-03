@@ -44,7 +44,7 @@ def _score_article(
     decay_penalty = days_old * config.ranking.stale_interest_decay
 
     best_category = "general_ai"
-    best_score = float("-inf")
+    best_score = 0
     best_keywords: tuple[str, ...] = ()
 
     for name, category in config.categories.items():
@@ -53,7 +53,7 @@ def _score_article(
         weighted_score = keyword_score * category.weight
         momentum_bonus = momentum.get(name, 0.0) * config.ranking.momentum_multiplier
         score = weighted_score + recency_bonus + momentum_bonus - decay_penalty
-        if score > best_score:
+        if matched and score > best_score and score > 0:
             best_score = score
             best_category = name
             best_keywords = matched

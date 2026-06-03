@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Any, Callable, Iterable, Mapping, Sequence
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -22,17 +26,28 @@ ExtractFn = Callable[[Sequence[str]], Mapping[str, Mapping[str, Any]] | Sequence
 def gather(queries: Sequence[str], search_fn: SearchFn, extract_fn: ExtractFn) -> list[Article]:
     search_index: dict[str, dict[str, Any]] = {}
     for query in queries:
-        for result in search_fn(query):
+        try:
+            search_results = search_fn(query)
+        except Exception as exc:
+            logger.warning("Search failed for query %r: %s", query, exc)
+            continue
+        for result in search_results or ():
             normalized = _normalize_search_result(result)
             if not normalized["url"]:
                 continue
             search_index.setdefault(normalized["url"], {}).update(normalized)
 
-    extracted = _normalize_extract_results(extract_fn(tuple(search_index.keys())))
+    try:
+        extracted = _normalize_extract_results(extract_fn(tuple(search_index.keys())))
+    except Exception as exc:
+        logger.warning("Article extraction failed: %s", exc)
+        extracted = {}
     articles: list[Article] = []
     for url, search_meta in search_index.items():
         extracted_meta = extracted.get(url, {})
+        extracted_date = _normalize_date(extracted_meta.get("date"))
         merged = {**search_meta, **extracted_meta, "url": url}
+        merged["date"] = extracted_date or search_meta.get("date")
         articles.append(
             Article(
                 title=str(merged.get("title", "Untitled article")),

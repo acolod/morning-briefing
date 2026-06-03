@@ -370,6 +370,15 @@
       letter-spacing: -0.02em;
     }
 
+    .signal h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .signal h3 a:hover {
+      text-decoration: underline;
+    }
+
     .tag {
       display: inline-flex;
       align-items: center;
@@ -704,7 +713,7 @@
                   <div class="signal-top">
                     <div>
                       <small>Signal {{ signal.number }}</small>
-                      <h3>{{ signal.headline }}</h3>
+                      <h3><a href="{{ signal.url }}" target="_blank" rel="noopener noreferrer">{{ signal.headline }}</a></h3>
                     </div>
                     <span class="tag {{ signal.tag | lower }}">{{ signal.tag }}</span>
                   </div>

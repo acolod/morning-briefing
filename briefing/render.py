@@ -44,6 +44,7 @@ def render(
             {
                 "number": f"{index:02d}",
                 "headline": article.article.title,
+                "url": article.article.url,
                 "tag": _signal_tag(article),
                 "why": _why_it_matters(article),
             }
