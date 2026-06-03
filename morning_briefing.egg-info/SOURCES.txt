@@ -1,0 +1,15 @@
+IMPLEMENTATION_SPEC.md
+pyproject.toml
+briefing/__init__.py
+briefing/build.py
+briefing/config.py
+briefing/gather.py
+briefing/rank.py
+briefing/render.py
+morning_briefing.egg-info/PKG-INFO
+morning_briefing.egg-info/SOURCES.txt
+morning_briefing.egg-info/dependency_links.txt
+morning_briefing.egg-info/requires.txt
+morning_briefing.egg-info/top_level.txt
+templates/daily-brief.html
+tests/test_pipeline.py

@@ -1,0 +1,101 @@
+search_queries:
+  - hermetic agents memory tool use browser workflows
+  - developer tooling cli automation workflows
+  - model launches pricing context benchmarks
+  - product building indie dev shipping design
+  - voice agents tts audio workflows
+  - video generation comfyui diffusion workflows
+
+categories:
+  hermetic_agents:
+    weight: 1.0
+    keywords:
+      - hermes
+      - agent
+      - agents
+      - tool use
+      - memory
+      - browser workflows
+      - orchestration
+      - automation reliability
+  dev_tooling:
+    weight: 0.9
+    keywords:
+      - developer workflow
+      - developer workflows
+      - cli
+      - tooling
+      - automation
+      - scripts
+      - local ops
+      - orchestration
+  model_landscape:
+    weight: 0.7
+    keywords:
+      - model
+      - models
+      - pricing
+      - context window
+      - context windows
+      - benchmark
+      - benchmarks
+      - latency
+  product_building:
+    weight: 0.8
+    keywords:
+      - product
+      - shipping
+      - build
+      - workflow leverage
+      - indie
+      - design
+      - experiment
+  voice_audio:
+    weight: 0.5
+    keywords:
+      - voice
+      - audio
+      - speech
+      - tts
+      - transcription
+      - voice agents
+  video_gen:
+    weight: 0.5
+    keywords:
+      - video
+      - comfyui
+      - diffusion
+      - visual
+      - generation
+      - concept art
+  legal_ai:
+    weight: 0.2
+    keywords:
+      - legal ai
+      - regulation
+      - compliance
+      - case law
+      - policy
+  general_ai:
+    weight: 0.4
+    keywords:
+      - ai
+      - llm
+      - launch
+      - inference
+      - assistant
+      - productivity
+
+ranking:
+  recency_half_life_days: 2.5
+  recency_boost: 0.9
+  stale_interest_decay: 0.04
+  momentum_multiplier: 0.35
+  top_signals: 4
+
+render:
+  source_window: Prior 18 hours
+  timezone: America/Los_Angeles
+  issue_prefix: Issue
+  title: Morning AI Brief
+  footer_note: "Keep a compact archival block near the bottom, then let the footrail carry product-level traits like adaptive scoring, HTML-first delivery, and mobile-openable status."

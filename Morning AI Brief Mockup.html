@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morning AI Brief — Mockup</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0d12;
+      --panel: rgba(255,255,255,0.045);
+      --panel-strong: rgba(255,255,255,0.07);
+      --line: rgba(255,255,255,0.09);
+      --text: #f3f4f6;
+      --muted: #a6acb8;
+      --soft: #d7dbe2;
+      --accent: #8fb4ff;
+      --accent-2: #c7d7ff;
+      --good: #9dd7b4;
+      --warn: #f3d18b;
+      --shadow: 0 24px 80px rgba(0,0,0,0.35);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --content: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(143,180,255,0.12), transparent 28%),
+        linear-gradient(180deg, #0a0c10 0%, #0b0d12 44%, #090b10 100%);
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .shell {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 24px 0 80px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0 28px;
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .pill-row, .inline-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--soft);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      line-height: 1;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.032));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-main {
+      padding: 28px;
+      min-height: 330px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      color: var(--accent-2);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      font-size: clamp(2.3rem, 4vw, 4.3rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: 11ch;
+      text-wrap: balance;
+    }
+
+    .lede {
+      margin: 18px 0 0;
+      max-width: 64ch;
+      color: var(--soft);
+      font-size: clamp(1rem, 1.5vw, 1.1rem);
+      line-height: 1.7;
+    }
+
+    .hero-side {
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .metric {
+      padding: 16px 18px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .metric .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.55rem;
+      margin-bottom: 6px;
+      letter-spacing: -0.03em;
+    }
+
+    .metric span {
+      color: var(--soft);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-card {
+      padding: 24px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .signal-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .signal {
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.025);
+      overflow: hidden;
+    }
+
+    .signal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px 18px 12px;
+      align-items: flex-start;
+    }
+
+    .signal h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.35;
+    }
+
+    .signal p {
+      margin: 0;
+      color: var(--soft);
+      line-height: 1.65;
+    }
+
+    .signal-body {
+      display: grid;
+      gap: 12px;
+      padding: 0 18px 18px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .track { background: rgba(143,180,255,0.12); color: var(--accent-2); border-color: rgba(143,180,255,0.18); }
+    .test { background: rgba(157,215,180,0.12); color: var(--good); border-color: rgba(157,215,180,0.2); }
+    .ignore { background: rgba(255,255,255,0.06); color: var(--muted); border-color: rgba(255,255,255,0.08); }
+    .learn { background: rgba(243,209,139,0.12); color: var(--warn); border-color: rgba(243,209,139,0.18); }
+
+    .kicker {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+
+    .note {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.07);
+      margin-top: 14px;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.96rem;
+      letter-spacing: -0.02em;
+    }
+
+    .bullet-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .bullet-list li {
+      padding: 14px 0;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      color: var(--soft);
+      line-height: 1.65;
+    }
+
+    .bullet-list li:first-child { border-top: 0; padding-top: 0; }
+
+    .focus-band {
+      margin: 18px 0;
+      padding: 20px 24px;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(143,180,255,0.16);
+      background: linear-gradient(180deg, rgba(143,180,255,0.11), rgba(143,180,255,0.05));
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .focus-band h2 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .focus-band p {
+      margin: 0;
+      max-width: 72ch;
+      color: var(--soft);
+      line-height: 1.7;
+    }
+
+    .mini-stack {
+      display: grid;
+      gap: 10px;
+      min-width: 230px;
+    }
+
+    .mini-card {
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(11,13,18,0.45);
+    }
+
+    .mini-card strong { display: block; margin-bottom: 4px; }
+    .mini-card span { color: var(--muted); font-size: 0.93rem; line-height: 1.5; }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    a {
+      color: var(--accent-2);
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    .link-vault a {
+      display: block;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .link-vault a:first-child { border-top: 0; padding-top: 0; }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .hero, .grid, .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .focus-band {
+        flex-direction: column;
+      }
+
+      h1 {
+        max-width: 14ch;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(calc(100% - 20px), var(--content));
+        padding-top: 14px;
+      }
+
+      .hero-main, .hero-side, .section-card {
+        padding: 20px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .signal-head {
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topbar">
+      <div class="inline-meta">
+        <span>Morning AI Brief</span>
+        <span class="muted">·</span>
+        <span>Adaptive prototype</span>
+      </div>
+      <div class="pill-row">
+        <span class="pill">Telegram delivery + hosted HTML</span>
+        <span class="pill">Mobile-first</span>
+        <span class="pill">Interest-weighted</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <article class="card hero-main">
+        <div>
+          <div class="eyebrow">Thursday · 06 Jun · Mock edition</div>
+          <h1>A calmer, sharper morning briefing for your AI build journey.</h1>
+          <p class="lede">
+            This prototype is designed as a premium daily memo rather than a generic newsletter. It blends top AI signals, Hermes-and-agent relevance, and a dynamic rising-interest section that can pivot toward whatever you start caring about next — video generation, evals, local inference, voice, or something else entirely.
+          </p>
+        </div>
+        <div class="pill-row">
+          <span class="pill">Top signals</span>
+          <span class="pill">For your build journey</span>
+          <span class="pill">Agent / Hermes radar</span>
+          <span class="pill">Rising topic this week</span>
+          <span class="pill">One suggested move</span>
+        </div>
+      </article>
+
+      <aside class="card hero-side">
+        <div class="metric">
+          <div class="label">Editorial posture</div>
+          <strong>High signal, low hype</strong>
+          <span>Every item should help answer: build, test, track, or ignore?</span>
+        </div>
+        <div class="metric">
+          <div class="label">Personalization model</div>
+          <strong>Stable + recent + decay</strong>
+          <span>Long-term interests stay sticky while new obsessions rise and cool off naturally.</span>
+        </div>
+        <div class="metric">
+          <div class="label">Delivery</div>
+          <strong>Hosted HTML first</strong>
+          <span>Telegram carries the summary and direct link so you can open the brief instantly on your phone.</span>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <article class="card section-card">
+        <div class="section-title">
+          <h2>Top signals</h2>
+          <span>What would matter most today</span>
+        </div>
+        <div class="signal-list">
+          <section class="signal">
+            <div class="signal-head">
+              <div>
+                <div class="kicker">Signal 01</div>
+                <h3>Agent tooling is improving reliability more than raw capability — and that matters for repeatable Hermes workflows.</h3>
+              </div>
+              <span class="tag test">Test</span>
+            </div>
+            <div class="signal-body">
+              <p><strong>Why it matters to you:</strong> Better tool-use reliability means fewer brittle automations and a lower cost to trust multi-step flows.</p>
+              <p><strong>Builder angle:</strong> prioritize changes that improve consistency, observability, and recovery — not just novelty.</p>
+            </div>
+          </section>
+
+          <section class="signal">
+            <div class="signal-head">
+              <div>
+                <div class="kicker">Signal 02</div>
+                <h3>Model and API releases should be filtered for practical leverage, not benchmark theater.</h3>
+              </div>
+              <span class="tag track">Track</span>
+            </div>
+            <div class="signal-body">
+              <p><strong>Why it matters to you:</strong> the brief should surface pricing, context, tool-use, latency, and integration implications before raw benchmark claims.</p>
+              <p><strong>Builder angle:</strong> a smaller capability jump with easier deployment may matter more than a headline-grabbing launch.</p>
+            </div>
+          </section>
+
+          <section class="signal">
+            <div class="signal-head">
+              <div>
+                <div class="kicker">Signal 03</div>
+                <h3>Rising interests should visibly reshape the brief so it starts feeling like your operating system, not a publication.</h3>
+              </div>
+              <span class="tag learn">Learn</span>
+            </div>
+            <div class="signal-body">
+              <p><strong>Why it matters to you:</strong> if you suddenly spend a week on video generation or local inference, the product should pivot with you.</p>
+              <p><strong>Builder angle:</strong> we should design the pipeline around interest weights from day one, even if the first version is simple.</p>
+            </div>
+          </section>
+        </div>
+      </article>
+
+      <aside class="card section-card">
+        <div class="section-title">
+          <h2>For your build journey</h2>
+          <span>Action-oriented curation</span>
+        </div>
+        <ul class="bullet-list">
+          <li><strong>Use stable lanes</strong> for Hermes, agents, dev tooling, and product-building so the brief never loses its center of gravity.</li>
+          <li><strong>Promote recent obsessions</strong> into a dedicated module rather than scattering them randomly across the page.</li>
+          <li><strong>Prefer practical interpretation</strong> over broad summary: what should be tested this week, what can wait, what is noise?</li>
+          <li><strong>Keep link count low</strong> so the brief feels curated rather than dumped.</li>
+        </ul>
+        <div class="note">
+          <strong>Recommended posture</strong>
+          Use the HTML artifact as the main product, and let Telegram act as the notification and entry point rather than the full reading surface.
+        </div>
+      </aside>
+    </section>
+
+    <section class="focus-band">
+      <div>
+        <h2>Rising topic this week</h2>
+        <p>
+          This module is intentionally dynamic. If your recent conversations start clustering around video generation, ComfyUI, voice, MCP, evals, or a specific model ecosystem, this space expands and the rest of the brief rebalances around it. If the topic fades, it naturally cools off without manual cleanup.
+        </p>
+      </div>
+      <div class="mini-stack">
+        <div class="mini-card">
+          <strong>Current mode</strong>
+          <span>Placeholder example: video gen interest spike</span>
+        </div>
+        <div class="mini-card">
+          <strong>Scoring rule</strong>
+          <span>Stable interest + recent mentions + follow-up depth − decay</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card section-card">
+        <div class="section-title">
+          <h2>Agent / Hermes radar</h2>
+          <span>Persistent lane</span>
+        </div>
+        <div class="signal-list">
+          <section class="signal">
+            <div class="signal-head">
+              <div>
+                <div class="kicker">Radar</div>
+                <h3>Scheduling, memory, tool reliability, and model-routing changes should always get first-class coverage.</h3>
+              </div>
+              <span class="tag track">Track</span>
+            </div>
+            <div class="signal-body">
+              <p>These are the areas most likely to change how you actually use Hermes day to day.</p>
+            </div>
+          </section>
+          <section class="signal">
+            <div class="signal-head">
+              <div>
+                <div class="kicker">Radar</div>
+                <h3>When a new feature is interesting but immature, the brief should say that plainly.</h3>
+              </div>
+              <span class="tag ignore">Ignore</span>
+            </div>
+            <div class="signal-body">
+              <p>Not every launch deserves experimentation time. The tone should stay calm, opinionated, and selective.</p>
+            </div>
+          </section>
+        </div>
+      </article>
+
+      <aside class="card section-card">
+        <div class="section-title">
+          <h2>One suggested move</h2>
+          <span>Daily next action</span>
+        </div>
+        <div class="note" style="margin-top:0;">
+          <strong>Prototype recommendation</strong>
+          Stand up the first automation as: gather sources → score items by interest → render HTML → send Telegram link. Don’t overbuild feedback controls before the daily cadence exists.
+        </div>
+        <div class="note">
+          <strong>One thing to learn</strong>
+          Study the difference between static interest profiles and recency-weighted topic models. That design choice is what will make this feel alive.
+        </div>
+      </aside>
+    </section>
+
+    <section class="footer-grid">
+      <article class="card section-card link-vault">
+        <div class="section-title">
+          <h2>Delivery architecture</h2>
+          <span>Recommended path</span>
+        </div>
+        <a href="#">1. Hosted HTML + Telegram link — best mobile experience</a>
+        <a href="#">2. Telegram + HTML/PDF attachment — fastest fallback</a>
+        <a href="#">3. Email-first newsletter — secondary channel later</a>
+      </article>
+
+      <article class="card section-card">
+        <div class="section-title">
+          <h2>Design language</h2>
+          <span>Intentional constraints</span>
+        </div>
+        <ul class="bullet-list">
+          <li>Editorial typography over dashboard clutter</li>
+          <li>Quiet monochrome palette with one cool accent</li>
+          <li>Cards used sparingly for structure, not decoration</li>
+          <li>Clear scanning rhythm for mobile morning reading</li>
+        </ul>
+      </article>
+
+      <article class="card section-card">
+        <div class="section-title">
+          <h2>What comes next</h2>
+          <span>Implementation sequence</span>
+        </div>
+        <ul class="bullet-list">
+          <li>Choose hosting target: Cloudflare Pages, Netlify, or GitHub Pages.</li>
+          <li>Build daily generator with source collection and topic weights.</li>
+          <li>Wire Telegram delivery to the hosted page URL.</li>
+          <li>Add archive, preview image, and weekly recap after the loop is working.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

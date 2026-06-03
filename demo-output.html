@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morning AI Brief</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    :root {
+      color-scheme: dark;
+      --bg: #060606;
+      --bg-soft: #0b0b0b;
+      --panel: rgba(18, 18, 18, 0.88);
+      --panel-2: rgba(22, 22, 22, 0.82);
+      --line: rgba(255, 236, 209, 0.11);
+      --line-strong: rgba(255, 178, 78, 0.28);
+      --text: #f3eee5;
+      --muted: #b9af9f;
+      --dim: #867c6e;
+      --accent: #f4a84d;
+      --accent-2: #ffd7a4;
+      --green: #7cd889;
+      --green-soft: rgba(124, 216, 137, 0.12);
+      --blue: #8bb3ff;
+      --blue-soft: rgba(139, 179, 255, 0.12);
+      --red: #ff8a7d;
+      --red-soft: rgba(255, 138, 125, 0.12);
+      --glow: rgba(244, 168, 77, 0.20);
+      --radius-lg: 18px;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.44);
+      --max: 1160px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      letter-spacing: -0.015em;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(244,168,77,0.10), transparent 26%),
+        radial-gradient(circle at 90% 10%, rgba(139,179,255,0.08), transparent 22%),
+        linear-gradient(180deg, #040404 0%, #070707 38%, #050505 100%);
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 100% 4px, 4px 100%;
+      opacity: 0.055;
+      mix-blend-mode: soft-light;
+    }
+
+    .shell {
+      width: min(calc(100% - 20px), var(--max));
+      margin: 0 auto;
+      padding: 14px 0 30px;
+    }
+
+    .frame {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at top, rgba(244,168,77,0.08), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), transparent 24%);
+      z-index: 0;
+    }
+
+    .toprail,
+    .footrail {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8,8,8,0.56);
+      backdrop-filter: blur(10px);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .footrail {
+      border-bottom: 0;
+      border-top: 1px solid var(--line);
+      background: rgba(10,10,10,0.62);
+    }
+
+    .rail-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(244,168,77,0.10), 0 0 18px var(--glow);
+      animation: pulse 4.2s ease-in-out infinite;
+    }
+
+    .canvas {
+      position: relative;
+      z-index: 1;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.28fr 0.72fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(20,20,20,0.86), rgba(14,14,14,0.76));
+      overflow: hidden;
+    }
+
+    .panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%);
+      opacity: 0.75;
+    }
+
+    .inner {
+      position: relative;
+      z-index: 1;
+      padding: 14px;
+    }
+
+    .microhead {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .headline {
+      margin: 0 0 10px;
+      max-width: 15ch;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: clamp(1.7rem, 2.7vw, 2.45rem);
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      text-wrap: balance;
+    }
+
+    .lede {
+      margin: 0;
+      max-width: 65ch;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.58;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .microcard {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 10px 11px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    }
+
+    .eyebrow {
+      margin-bottom: 6px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+    }
+
+    .microcard strong,
+    .metric strong,
+    .module strong,
+    .step strong,
+    .thumb-copy strong,
+    .caption strong,
+    .meta-item strong {
+      display: block;
+      font-size: 0.93rem;
+      line-height: 1.3;
+      margin-bottom: 5px;
+    }
+
+    .microcard span,
+    .metric p,
+    .module p,
+    .step p,
+    .signal p,
+    .feature li,
+    .linklist a,
+    .caption p,
+    .meta-grid p,
+    .footer-note p,
+    .thumb-copy p {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.48;
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    }
+
+    .metric p,
+    .step p,
+    .module p,
+    .signal p { margin: 0; }
+
+    .signalband {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 16px;
+      padding: 11px 13px;
+      background: linear-gradient(180deg, rgba(244,168,77,0.12), rgba(244,168,77,0.05));
+      box-shadow: inset 0 0 0 1px rgba(244,168,77,0.06);
+    }
+
+    .signalband .label,
+    .section-title h2 {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .signalband .label {
+      color: var(--accent-2);
+      font-size: 0.83rem;
+      white-space: nowrap;
+    }
+
+    .signalband .copy {
+      color: #edd4b0;
+      font-size: 0.89rem;
+      line-height: 1.45;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 12px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      color: var(--accent-2);
+      font-size: 0.98rem;
+    }
+
+    .section-title span {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+    }
+
+    .signals,
+    .stack,
+    .steps,
+    .linklist {
+      display: grid;
+      gap: 8px;
+    }
+
+    .signal,
+    .module,
+    .step {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 11px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.026), rgba(255,255,255,0.014));
+    }
+
+    .signal-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: start;
+      margin-bottom: 7px;
+    }
+
+    .signal small {
+      display: block;
+      margin-bottom: 5px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .signal h3 {
+      margin: 0;
+      font-size: 0.96rem;
+      line-height: 1.34;
+      letter-spacing: -0.02em;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .test { color: var(--green); background: var(--green-soft); border-color: rgba(124,216,137,0.22); }
+    .track { color: var(--blue); background: var(--blue-soft); border-color: rgba(139,179,255,0.22); }
+    .ignore { color: var(--red); background: var(--red-soft); border-color: rgba(255,138,125,0.22); }
+    .learn { color: var(--accent-2); background: rgba(244,168,77,0.12); border-color: rgba(244,168,77,0.24); }
+
+    .feature ul {
+      margin: 0;
+      padding-left: 17px;
+    }
+
+    .feature li + li { margin-top: 7px; }
+
+    .interest-strip {
+      display: grid;
+      grid-template-columns: 1.16fr 0.84fr;
+      gap: 12px;
+    }
+
+    .focus {
+      position: relative;
+      border: 1px solid rgba(139,179,255,0.24);
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(139,179,255,0.12), rgba(139,179,255,0.04));
+    }
+
+    .focus::before {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,179,255,0.55), transparent);
+    }
+
+    .focus .inner p {
+      margin: 0;
+      color: #d5dff2;
+      font-size: 0.9rem;
+      line-height: 1.56;
+    }
+
+    .triple {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .linklist a {
+      display: block;
+      text-decoration: none;
+      color: var(--accent-2);
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+
+    .linklist a:first-child { border-top: 0; padding-top: 0; }
+    .linklist a:hover { text-decoration: underline; }
+
+    .sparkline {
+      height: 34px;
+      display: flex;
+      align-items: end;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .sparkline span {
+      display: block;
+      width: 100%;
+      border-radius: 999px 999px 4px 4px;
+      background: linear-gradient(180deg, rgba(244,168,77,0.92), rgba(244,168,77,0.28));
+      box-shadow: 0 0 14px rgba(244,168,77,0.12);
+      animation: shimmer 6s ease-in-out infinite;
+    }
+
+    .sparkline span:nth-child(1) { height: 32%; animation-delay: 0s; }
+    .sparkline span:nth-child(2) { height: 56%; animation-delay: 0.3s; }
+    .sparkline span:nth-child(3) { height: 48%; animation-delay: 0.6s; }
+    .sparkline span:nth-child(4) { height: 74%; animation-delay: 0.9s; }
+    .sparkline span:nth-child(5) { height: 66%; animation-delay: 1.2s; }
+    .sparkline span:nth-child(6) { height: 88%; animation-delay: 1.5s; }
+    .sparkline span:nth-child(7) { height: 64%; animation-delay: 1.8s; }
+
+    .tiny {
+      color: var(--dim);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .visual-panel {
+      min-height: 100%;
+    }
+
+    .visual-card {
+      display: grid;
+      gap: 10px;
+    }
+
+    .thumb-shell {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    }
+
+    .thumb {
+      height: 152px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)),
+        radial-gradient(circle at 72% 24%, rgba(244,168,77,0.28), transparent 23%),
+        linear-gradient(135deg, #0b0b0b, #111111 56%, #0a0a0a);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .thumb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.014) 1px, transparent 1px);
+      background-size: 100% 5px, 5px 100%;
+      opacity: 0.22;
+    }
+
+    .thumb::after {
+      content: 'Article visual';
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,215,164,0.88);
+    }
+
+    .thumb-copy {
+      padding: 11px 12px 12px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .meta-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 11px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.026), rgba(255,255,255,0.014));
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(244,168,77,0.10), 0 0 14px rgba(244,168,77,0.18); }
+      50% { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(244,168,77,0.12), 0 0 22px rgba(244,168,77,0.28); }
+    }
+
+    @keyframes shimmer {
+      0%, 100% { filter: saturate(1) brightness(1); }
+      50% { filter: saturate(1.12) brightness(1.08); }
+    }
+
+    @media (max-width: 940px) {
+      .hero,
+      .main,
+      .interest-strip,
+      .triple,
+      .hero-grid,
+      .story-strip,
+      .meta-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .shell { width: min(calc(100% - 10px), var(--max)); padding-top: 8px; }
+      .toprail,
+      .footrail,
+      .signalband { grid-template-columns: 1fr; }
+      .signal-top { grid-template-columns: 1fr; }
+      .headline { font-size: 1.55rem; }
+      .canvas,
+      .inner { padding: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="frame">
+      <div class="toprail">
+        <div class="rail-group">
+          <span class="status-dot"></span>
+          <span>/briefs/2026-06-02</span>
+          <span>Morning AI Brief</span>
+          <span>v1 production</span>
+        </div>
+        <div class="rail-group">
+          <span>mode: builder</span>
+          <span>signals: 4</span>
+          <span>delivery: html-first</span>
+          <span>assets: restrained</span>
+        </div>
+      </div>
+
+      <div class="canvas">
+        <section class="hero">
+          <article class="panel">
+            <div class="inner">
+              <div class="microhead">
+                <span>Issue 001 // daily operator memo</span>
+                <span>Tuesday · June 2, 2026 · 11:06 PM PDT</span>
+              </div>
+              <h1 class="headline">Hermes agents get calmer tool memory and recovery loops. CLI-first automation stacks are replacing one-off demo scaffolds.</h1>
+              <p class="lede">Agent runs are getting more dependable because retry logic, memory, and browser handoffs are being treated as product features rather than incidental glue. Developer workflows are consolidating around portable CLI tools, orchestration scripts, and repeatable local automation.</p>
+
+              <div class="hero-grid">
+                
+                <div class="microcard">
+                  <div class="eyebrow">Top lane</div>
+                  <strong>Hermes agents get calmer tool memory and recovery loops</strong>
+                  <span>Make the first screen answer what is worth testing today, not just what happened.</span>
+                </div>
+                
+                <div class="microcard">
+                  <div class="eyebrow">Adaptive lane</div>
+                  <strong>Hermetic Agents is shaping the brief.</strong>
+                  <span>Momentum should rise quickly when a topic keeps surfacing, then cool off naturally when attention moves elsewhere.</span>
+                </div>
+                
+                <div class="microcard">
+                  <div class="eyebrow">Delivery lane</div>
+                  <strong>The artifact is the product.</strong>
+                  <span>HTML carries the full reading surface while messaging remains a nudge and deep-link, not the main canvas.</span>
+                </div>
+                
+              </div>
+            </div>
+          </article>
+
+          <aside class="side-stack">
+            <div class="metric visual-panel">
+              <div class="eyebrow">Visual note</div>
+              <div class="visual-card">
+                <div class="thumb" aria-hidden="true"></div>
+                <div class="caption">
+                  <strong>Article-style visuals are the better fit here.</strong>
+                  <p>This keeps the image treatment feeling native to the briefing instead of looking like a detached hero asset or broken attachment.</p>
+                </div>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="eyebrow">Metadata idea</div>
+              <strong>Each issue should stamp its timing and input window clearly.</strong>
+              <p>Date, publish time, timezone, source window, and issue ID make the brief feel archival and trustworthy.</p>
+            </div>
+            <div class="metric">
+              <div class="eyebrow">Signal shape</div>
+              <strong>Semantic color, not decorative color.</strong>
+              <p>Amber for primary framing, blue for watch lanes, green for action, red for caution.</p>
+              <div class="sparkline" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <div class="signalband">
+          <div class="label">Theme //</div>
+          <div class="copy">The highest-leverage signal today sits in hermetic agents, dev tooling, product building, where practical workflow value matters more than novelty for its own sake.</div>
+          <div class="tiny">high signal / low drag</div>
+        </div>
+
+        <div class="story-strip">
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Image treatment</h2>
+                <span>small, intentional, optional</span>
+              </div>
+              <div class="stack">
+                <div class="module">
+                  <div class="eyebrow">Rule</div>
+                  <strong>Use at most one or two visuals in an issue.</strong>
+                  <p>Good candidates: a compact article image, chart crop, product screenshot, or a restrained abstract illustration that supports the lead theme.</p>
+                </div>
+                <div class="module">
+                  <div class="eyebrow">Placement</div>
+                  <strong>Best slots are the top-right rail or a mid-page story callout.</strong>
+                  <p>That keeps the page feeling premium and alive without turning the brief into a thumbnail feed.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <aside class="thumb-shell">
+            <div class="thumb" aria-hidden="true"></div>
+            <div class="thumb-copy">
+              <div class="eyebrow">Article image mock slot</div>
+              <strong>Example of a tiny extracted visual card.</strong>
+              <p>A production version can pull a clean source image from the most relevant article or fall back to an abstract visual if the source art is noisy.</p>
+            </div>
+          </aside>
+        </div>
+
+        <section class="main">
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Top signals</h2>
+                <span>what actually matters</span>
+              </div>
+              <div class="signals">
+                
+                <section class="signal">
+                  <div class="signal-top">
+                    <div>
+                      <small>Signal 01</small>
+                      <h3>Hermes agents get calmer tool memory and recovery loops</h3>
+                    </div>
+                    <span class="tag test">Test</span>
+                  </div>
+                  <p><strong>Why it matters:</strong> Agent runs are getting more dependable because retry logic, memory, and browser handoffs are being treated as product features rather than incidental glue.</p>
+                </section>
+                
+                <section class="signal">
+                  <div class="signal-top">
+                    <div>
+                      <small>Signal 02</small>
+                      <h3>CLI-first automation stacks are replacing one-off demo scaffolds</h3>
+                    </div>
+                    <span class="tag test">Test</span>
+                  </div>
+                  <p><strong>Why it matters:</strong> Developer workflows are consolidating around portable CLI tools, orchestration scripts, and repeatable local automation.</p>
+                </section>
+                
+                <section class="signal">
+                  <div class="signal-top">
+                    <div>
+                      <small>Signal 03</small>
+                      <h3>Product builders are packaging AI features as disciplined daily loops</h3>
+                    </div>
+                    <span class="tag test">Test</span>
+                  </div>
+                  <p><strong>Why it matters:</strong> The strongest AI products are narrowing around recurring operator actions instead of sprawling feature collections.</p>
+                </section>
+                
+                <section class="signal">
+                  <div class="signal-top">
+                    <div>
+                      <small>Signal 04</small>
+                      <h3>New model launches matter less than latency, price, and tool behavior</h3>
+                    </div>
+                    <span class="tag track">Track</span>
+                  </div>
+                  <p><strong>Why it matters:</strong> Benchmarks still move headlines, but product teams are filtering models through cost, latency, and tool-call quality first.</p>
+                </section>
+                
+              </div>
+            </div>
+          </article>
+
+          <aside class="panel feature">
+            <div class="inner">
+              <div class="section-title">
+                <h2>For your build journey</h2>
+                <span>practical filter</span>
+              </div>
+              <ul>
+                
+                <li>Keep hermetic agents visible as a persistent lane while the brief adapts around current spikes.</li>
+                
+                <li>Keep dev tooling visible as a persistent lane while the brief adapts around current spikes.</li>
+                
+                <li>Keep product building visible as a persistent lane while the brief adapts around current spikes.</li>
+                
+                <li>Promote action labels clearly: test Example Labs before adding more links.</li>
+                
+              </ul>
+            </div>
+          </aside>
+        </section>
+
+        <section class="interest-strip">
+          <article class="focus">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Rising topic this week</h2>
+                <span>adaptive zone</span>
+              </div>
+              <p>
+                <strong>Hermetic Agents</strong> Hermetic Agents is the strongest adaptive lane right now, with momentum 1.00. Keep that topic visible while it still changes what is worth testing, tracking, or ignoring.
+              </p>
+            </div>
+          </article>
+
+          <aside class="steps">
+            
+            <div class="step">
+              <div class="eyebrow">Weighting</div>
+              <strong>Stable interests + recent mentions + follow-up depth - decay</strong>
+              <p>The score blends static preferences with recency and momentum so the brief can visibly rebalance without losing its core lanes.</p>
+            </div>
+            
+            <div class="step">
+              <div class="eyebrow">Effect</div>
+              <strong>Changes the sources, section order, and suggested experiments</strong>
+              <p>The ranking should shift what rises, what stays persistent, and what is framed as worth testing today.</p>
+            </div>
+            
+          </aside>
+        </section>
+
+        <section class="main">
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Agent / Hermes radar</h2>
+                <span>persistent lane</span>
+              </div>
+              <div class="stack">
+                
+                <div class="module">
+                  <div class="eyebrow">Radar</div>
+                  <strong>Hermes agents get calmer tool memory and recovery loops</strong>
+                  <p>Agent runs are getting more dependable because retry logic, memory, and browser handoffs are being treated as product features rather than incidental glue.</p>
+                </div>
+                
+                <div class="module">
+                  <div class="eyebrow">Radar</div>
+                  <strong>CLI-first automation stacks are replacing one-off demo scaffolds</strong>
+                  <p>Developer workflows are consolidating around portable CLI tools, orchestration scripts, and repeatable local automation.</p>
+                </div>
+                
+              </div>
+            </div>
+          </article>
+
+          <aside class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>One move today</h2>
+                <span>concrete next action</span>
+              </div>
+              <div class="stack">
+                
+                <div class="module">
+                  <div class="eyebrow">Build path</div>
+                  <strong>Ship the first automated loop before overbuilding controls.</strong>
+                  <p>Gather sources, score them, render the HTML artifact, and validate against Hermes agents get calmer tool memory and recovery loops before widening the surface.</p>
+                </div>
+                
+                <div class="module">
+                  <div class="eyebrow">Learn next</div>
+                  <strong>Study the ranking dynamics around hermetic agents.</strong>
+                  <p>Use CLI-first automation stacks are replacing one-off demo scaffolds as the next test case for recency and momentum tuning.</p>
+                </div>
+                
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="triple">
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Delivery path</h2>
+                <span>recommended</span>
+              </div>
+              <div class="linklist">
+                
+                <a href="#">Hosted HTML artifact + Telegram link</a>
+                
+                <a href="#">Attachment fallback while setup is still local</a>
+                
+                <a href="#">Email only as a secondary archive channel later</a>
+                
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Visual rules</h2>
+                <span>v3 refinements</span>
+              </div>
+              <div class="stack">
+                
+                <div class="module">
+                  <div class="eyebrow">Tone</div>
+                  <strong>Polished first, retro second.</strong>
+                  <p>The aesthetic can nod to terminal energy without sacrificing a calm, modern reading experience.</p>
+                </div>
+                
+                <div class="module">
+                  <div class="eyebrow">Scale</div>
+                  <strong>Titles stay strong without becoming oversized posters.</strong>
+                  <p>More premium desktop briefing, less giant splash screen.</p>
+                </div>
+                
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Issue metadata</h2>
+                <span>archive + trust layer</span>
+              </div>
+              <div class="meta-grid">
+                <div class="meta-item">
+                  <div class="eyebrow">Date</div>
+                  <strong>June 2, 2026</strong>
+                  <p>Morning edition</p>
+                </div>
+                <div class="meta-item">
+                  <div class="eyebrow">Published</div>
+                  <strong>11:06 PM PDT</strong>
+                  <p>Local-time stamp</p>
+                </div>
+                <div class="meta-item">
+                  <div class="eyebrow">Source window</div>
+                  <strong>Prior 18 hours</strong>
+                  <p>Recency-bounded inputs</p>
+                </div>
+                <div class="meta-item">
+                  <div class="eyebrow">Issue ID</div>
+                  <strong>#001</strong>
+                  <p>Persistent archive key</p>
+                </div>
+              </div>
+              <div class="footer-note">
+                <p><strong>Footer pattern recommendation:</strong> Keep a compact archival block near the bottom, then let the footrail carry product-level traits like adaptive scoring, HTML-first delivery, and mobile-openable status.</p>
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <div class="footrail">
+        <div class="rail-group">
+          <span>production v1</span>
+          <span>dense / polished / adaptive / image-light</span>
+        </div>
+        <div class="rail-group">
+          
+          <span>standalone html</span>
+          
+          <span>subtle motion</span>
+          
+          <span>dated footer</span>
+          
+          <span>mobile-openable</span>
+          
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
