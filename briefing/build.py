@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import json
 import argparse
 from pathlib import Path
 from typing import Any, Sequence
 
 from .config import load_config, load_momentum
-from .gather import gather
+from .gather import Article, gather
 from .rank import rank
 from .render import render
 
@@ -77,6 +78,7 @@ _DEFAULT_MOMENTUM = {
 def build(
     config_path: str | Path = "config.yaml",
     momentum_path: str | Path | None = "momentum.json",
+    articles_path: str | Path | None = None,
     search_fn=None,
     extract_fn=None,
     demo: bool = False,
@@ -89,12 +91,34 @@ def build(
     if demo:
         search_fn = _demo_search
         extract_fn = _demo_extract
-    if search_fn is None or extract_fn is None:
-        raise ValueError("Production mode requires injected search_fn and extract_fn callbacks.")
 
-    articles = gather(config.search_queries, search_fn=search_fn, extract_fn=extract_fn)
+    if articles_path:
+        articles = _load_articles(Path(articles_path))
+    elif search_fn is not None and extract_fn is not None:
+        articles = gather(config.search_queries, search_fn=search_fn, extract_fn=extract_fn)
+    else:
+        raise ValueError("Production mode requires either --articles-file or injected search_fn and extract_fn callbacks.")
+
     ranked_articles = rank(articles, config, momentum=momentum)
     return render(ranked_articles, config, momentum=momentum)
+
+
+def _load_articles(path: Path) -> list[Article]:
+    """Load articles from a JSON file. Expects a list of dicts with fields:
+    title, url, source, description, content_text, date (optional)."""
+    with open(path) as f:
+        raw = json.load(f)
+    return [
+        Article(
+            title=str(item.get("title", "")),
+            url=str(item.get("url", "")),
+            source=str(item.get("source", "")),
+            description=str(item.get("description", "")),
+            content_text=str(item.get("content_text", "")),
+            date=str(item["date"]) if item.get("date") else None,
+        )
+        for item in raw
+    ]
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -102,11 +126,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--config", default="config.yaml", help="Path to the YAML config file.")
     parser.add_argument("--momentum", default="momentum.json", help="Path to the optional momentum JSON file.")
     parser.add_argument("--demo", action="store_true", help="Use built-in sample content instead of injected callbacks.")
+    parser.add_argument("--articles-file", type=str, default=None, help="Path to a JSON file with pre-collected articles (bypasses gather).")
     args = parser.parse_args(argv)
 
     html = build(
         config_path=args.config,
         momentum_path=args.momentum,
+        articles_path=args.articles_file,
         demo=args.demo,
     )
     print(html)

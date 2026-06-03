@@ -1,0 +1,34 @@
+[
+  {
+    "title": "OpenAI releases new agent SDK with improved tool reliability",
+    "url": "https://example.com/agent-sdk",
+    "source": "AI Weekly",
+    "description": "The new SDK focuses on retry logic, memory persistence, and browser automation handoffs — exactly the kind of reliability improvements that matter for production agent workflows.",
+    "content_text": "agent sdk openai tool reliability memory persistence retry browser automation production workflows",
+    "date": "2026-06-03T14:00:00+00:00"
+  },
+  {
+    "title": "MCP protocol gains adoption across major IDEs and editors",
+    "url": "https://example.com/mcp-adoption",
+    "source": "Dev Tooling Digest",
+    "description": "Model Context Protocol is seeing rapid integration into VS Code, JetBrains, and terminal-based editors, making tool-call infrastructure more portable.",
+    "content_text": "mcp model context protocol ide editors vs code jetbrains terminal tool call infrastructure",
+    "date": "2026-06-03T12:30:00+00:00"
+  },
+  {
+    "title": "Hermes adds scheduled cron jobs and persistent memory profiles",
+    "url": "https://example.com/hermes-update",
+    "source": "Hermes Blog",
+    "description": "The latest Hermes release introduces configurable cron scheduling, persistent memory per profile, and improved subagent delegation reliability.",
+    "content_text": "hermes cron scheduling memory profiles subagent delegation reliability release update",
+    "date": "2026-06-03T11:00:00+00:00"
+  },
+  {
+    "title": "Local LLM inference sees big speed improvements with new GGUF kernels",
+    "url": "https://example.com/local-inference",
+    "source": "Local AI Report",
+    "description": "New quantization kernels for llama.cpp show 2x speedup on consumer GPUs, making local model runs more practical for daily dev workflows.",
+    "content_text": "local llm inference gguf quantization llama.cpp speedup consumer gpu dev workflows",
+    "date": "2026-06-03T09:15:00+00:00"
+  }
+]
