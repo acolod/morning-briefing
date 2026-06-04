@@ -57,13 +57,14 @@ def _normalize_editorial(
     )
     signals = [
         _normalize_story(_mapping(item), fallback_tag="note")
-        for item in _list(editorial.get("signals"))[:6]
+        for item in _list(editorial.get("signals"))[:10]
     ]
     radar = [_text(item) for item in _list(editorial.get("radar")) if _text(item)]
     one_move = _text(editorial.get("one_move")) or "No move supplied for this issue."
 
     return {
         "title": config.render.title,
+        "banner_image_url": _text(editorial.get("banner_image_url")),
         "issue_prefix": config.render.issue_prefix,
         "issue": issue,
         "top_story": top_story,
@@ -100,7 +101,8 @@ def _normalize_story(
     return {
         "headline": _text(raw.get("headline")) or fallback_headline,
         "source": _text(raw.get("source")) or "Unknown source",
-        "url": _real_url(_text(raw.get("url"))),
+        "url": "" if raw.get("verified") is False and not _text(raw.get("url")) else _real_url(_text(raw.get("url"))),
+        "date": _text(raw.get("date")),
         "take": _text(raw.get("take")) or fallback_take,
         "tag": tag,
         "tag_label": tag.upper(),

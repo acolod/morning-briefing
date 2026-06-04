@@ -21,8 +21,8 @@
       --accent-2: #ffd7a4;
       --adopt: #7cd889;
       --try: #f4a84d;
-      --track: #8bb3ff;
-      --note: #867c6e;
+      --track: #6ba0ff;
+      --note: #a89880;
       --shadow: 0 26px 80px rgba(0, 0, 0, 0.44);
       --max: 740px;
     }
@@ -116,8 +116,23 @@
       padding: 16px 16px 18px;
       border-bottom: 1px solid var(--line);
     }
+    .section + .section {
+      border-top: 1px solid var(--line);
+    }
     .section:last-of-type {
       border-bottom: none;
+    }
+    .top-story-section {
+      background: var(--panel);
+    }
+    .signals-section {
+      background: linear-gradient(180deg, rgba(107,160,255,0.045), rgba(18,18,18,0.84));
+    }
+    .radar-section {
+      background: linear-gradient(180deg, rgba(124,216,137,0.038), rgba(18,18,18,0.82));
+    }
+    .move-section {
+      background: linear-gradient(180deg, rgba(244,168,77,0.045), rgba(18,18,18,0.84));
     }
 
     a {
@@ -151,18 +166,26 @@
       white-space: nowrap;
       line-height: 1;
     }
-    .tag--adopt { color: var(--adopt); background: rgba(124,216,137,0.12); border-color: rgba(124,216,137,0.24); }
-    .tag--try   { color: var(--try);   background: rgba(244,168,77,0.12);  border-color: rgba(244,168,77,0.26); }
-    .tag--track { color: var(--track); background: rgba(139,179,255,0.12); border-color: rgba(139,179,255,0.24); }
-    .tag--note  { color: var(--note);  background: rgba(134,124,110,0.12); border-color: rgba(134,124,110,0.28); }
+    .tag--adopt { color: var(--adopt); background: rgba(124,216,137,0.18); border-color: rgba(124,216,137,0.28); }
+    .tag--try   { color: var(--try);   background: rgba(244,168,77,0.18);  border-color: rgba(244,168,77,0.32); }
+    .tag--track { color: var(--track); background: rgba(107,160,255,0.18); border-color: rgba(107,160,255,0.30); }
+    .tag--note  { color: var(--note);  background: rgba(168,152,128,0.18); border-color: rgba(168,152,128,0.32); }
 
-    .source-label {
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 10px;
+      font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.04em;
       color: var(--dim);
+      margin-bottom: 0.35rem;
+      flex-wrap: wrap;
     }
+    .source-name { color: var(--muted); }
+    .source-date { color: var(--dim); }
+    .source-date::before { content: '·'; margin-right: 0.5rem; }
 
     .headline {
       margin: 0 0 10px;
@@ -195,6 +218,14 @@
       gap: 8px;
       margin-bottom: 10px;
     }
+    .section-header::before {
+      content: '';
+      width: 3px;
+      height: 1em;
+      background: var(--accent);
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
     .section-header h2 {
       margin: 0;
       font-family: 'JetBrains Mono', ui-monospace, monospace;
@@ -202,6 +233,15 @@
       text-transform: uppercase;
       letter-spacing: 0.10em;
       color: var(--dim);
+    }
+    .section-header h2::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 1px;
+      margin-top: 5px;
+      background: var(--accent);
+      opacity: 0.42;
     }
     .section-line {
       flex: 1;
@@ -219,6 +259,7 @@
       display: block;
       padding: 12px 14px;
       border: 1px solid var(--line);
+      border-left: 2px solid var(--line);
       border-radius: 12px;
       background: var(--panel-soft);
     }
@@ -229,16 +270,6 @@
       font-size: 1rem;
       font-weight: 500;
       line-height: 1.4;
-    }
-
-    .signal-source {
-      display: block;
-      margin-top: 3px;
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--dim);
     }
 
     .signal-tag {
@@ -329,6 +360,28 @@
       font-size: 0.82rem;
       line-height: 1.5;
     }
+    .kimi-footer {
+      margin: 0;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--dim);
+      padding: 1rem 0;
+    }
+
+    .banner-image {
+      margin: 16px 16px 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      max-height: 200px;
+      background: rgba(255,255,255,0.02);
+    }
+    .banner-image img {
+      display: block;
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+    }
 
     @media (max-width: 940px) {
       .issue-metadata {
@@ -378,14 +431,23 @@
 
       <div class="canvas">
 
-        <div class="section">
+        {% if banner_image_url %}
+        <div class="banner-image">
+          <img src="{{ banner_image_url }}" alt="Issue banner" loading="lazy" />
+        </div>
+        {% endif %}
+
+        <section class="section top-story-section" aria-label="Top story">
           <div class="section-header">
             <h2>Top story</h2>
             <div class="section-line"></div>
           </div>
           <div class="top-meta">
             <span class="tag tag--{{ top_story.tag }}">{{ top_story.tag_label }}</span>
-            <span class="source-label">{{ top_story.source }}</span>
+            <div class="article-meta">
+              <span class="source-name">{{ top_story.source }}</span>
+              {% if top_story.date %}<span class="source-date">{{ top_story.date }}</span>{% endif %}
+            </div>
           </div>
           <h1 class="headline">
             {% if top_story.url %}
@@ -398,9 +460,9 @@
           {% if top_story.why_now %}
           <p class="why-now">→ {{ top_story.why_now }}</p>
           {% endif %}
-        </div>
+        </section>
 
-        <div class="section">
+        <section class="section signals-section" aria-label="Signals">
           <div class="section-header">
             <h2>Signals</h2>
             <div class="section-line"></div>
@@ -411,7 +473,10 @@
               <h3 class="signal-headline">
                 <a href="{{ signal.url }}" target="_blank" rel="noopener noreferrer">{{ signal.headline }}</a>
               </h3>
-              <span class="signal-source">{{ signal.source }}</span>
+              <div class="article-meta">
+                <span class="source-name">{{ signal.source }}</span>
+                {% if signal.date %}<span class="source-date">{{ signal.date }}</span>{% endif %}
+              </div>
               <span class="tag signal-tag tag--{{ signal.tag }}">{{ signal.tag_label }}</span>
               <p class="signal-take">{{ signal.take }}</p>
             </div>
@@ -421,10 +486,10 @@
             </div>
             {% endfor %}
           </div>
-        </div>
+        </section>
 
         {% if radar %}
-        <div class="section">
+        <section class="section radar-section" aria-label="Radar">
           <div class="section-header">
             <h2>Radar</h2>
             <div class="section-line"></div>
@@ -434,10 +499,10 @@
             <li>{{ item }}</li>
             {% endfor %}
           </ul>
-        </div>
+        </section>
         {% endif %}
 
-        <div class="section">
+        <section class="section move-section" aria-label="One move today">
           <div class="section-header">
             <h2>One move today</h2>
             <div class="section-line"></div>
@@ -445,7 +510,7 @@
           <div class="one-move">
             <p>{{ one_move }}</p>
           </div>
-        </div>
+        </section>
 
       </div>
 
@@ -479,6 +544,8 @@
           {% endfor %}
         </div>
       </div>
+
+      <p class="kimi-footer">Crafted by Kimi · Sources from RSS feeds · <span class="tag tag--note">alpha</span></p>
 
     </section>
   </main>

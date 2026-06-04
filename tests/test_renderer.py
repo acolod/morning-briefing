@@ -8,6 +8,7 @@ from markupsafe import escape
 
 from briefing.build import _DEMO_EDITORIAL, build
 from briefing.render import render
+from briefing.verify_urls import verify_urls
 
 
 RETIRED_PHRASES = [
@@ -171,3 +172,60 @@ def test_editorial_json_cli(tmp_path):
 
     assert result.stdout.startswith("<!DOCTYPE html>")
     assert str(escape(_DEMO_EDITORIAL["top_story"]["headline"])) in result.stdout
+
+
+def test_verify_urls_removes_dead(monkeypatch):
+    editorial = copy.deepcopy(_DEMO_EDITORIAL)
+    editorial["signals"] = [
+        {
+            "headline": "Live signal",
+            "source": "Live Source",
+            "url": "https://example.com/live",
+            "take": "This should stay.",
+            "tag": "try",
+        },
+        {
+            "headline": "Dead signal",
+            "source": "Dead Source",
+            "url": "https://example.com/dead",
+            "take": "This should be removed.",
+            "tag": "track",
+        },
+    ]
+    editorial["radar"] = [
+        "Live radar item https://example.com/radar-live",
+        "Dead radar item https://example.com/radar-dead",
+    ]
+
+    def fake_url_is_live(url: str, timeout: int = 5) -> tuple[bool, str | None]:
+        if url.endswith("/dead") or url.endswith("/radar-dead"):
+            return False, "404"
+        return True, None
+
+    monkeypatch.setattr("briefing.verify_urls._url_is_live", fake_url_is_live)
+
+    verified = verify_urls(editorial)
+
+    assert [item["headline"] for item in verified["signals"]] == ["Live signal"]
+    assert verified["signals"][0]["verified"] is True
+    assert verified["radar"] == ["Live radar item https://example.com/radar-live"]
+    assert verified["verification_report"]["removed"] == [
+        {"path": "signals[1].url", "url": "https://example.com/dead", "reason": "404"},
+        {"path": "radar[1]", "url": "https://example.com/radar-dead", "reason": "404"},
+    ]
+
+
+def test_verify_urls_passes_good(monkeypatch):
+    editorial = copy.deepcopy(_DEMO_EDITORIAL)
+
+    def fake_url_is_live(url: str, timeout: int = 5) -> tuple[bool, str | None]:
+        return True, None
+
+    monkeypatch.setattr("briefing.verify_urls._url_is_live", fake_url_is_live)
+
+    verified = verify_urls(editorial)
+
+    assert len(verified["signals"]) == len(editorial["signals"])
+    assert verified["top_story"]["verified"] is True
+    assert all(signal["verified"] is True for signal in verified["signals"])
+    assert verified["verification_report"]["removed"] == []

@@ -20,15 +20,16 @@ Aim for source diversity: mix official announcements, community discoveries, use
 2. Skim all source titles, descriptions, source names, dates, and URLs.
 3. Select 8-12 promising candidates worth deeper reading.
 4. Extract full content from those URLs via `web_extract` or the available web extraction tool.
-5. Curate down to 5-7 items that genuinely matter for Alex's build.
-6. Write `editorial.json` with clickable source URLs, personal takes, action tags, and one move today.
-7. Run:
+5. Curate down to 7-10 items that genuinely matter for Alex's build.
+6. Write one top story plus 7-10 signals, with 2-3 radar items for weaker but worth-watching context.
+7. Write `editorial.json` with clickable source URLs, optional publication dates, personal takes, action tags, and one move today.
+8. Run:
 
 ```bash
 python -m briefing.build --editorial-json editorial.json --output brief-today.html
 ```
 
-8. Leave `brief-today.html` ready for Telegram delivery.
+9. Leave `brief-today.html` ready for Telegram delivery.
 
 ## Editorial Shape
 
@@ -47,6 +48,7 @@ Use this JSON structure:
     "headline": "Concrete headline",
     "source": "Source Name",
     "url": "https://example.com/source",
+    "date": "June 4, 2026",
     "take": "Personal editorial take for Alex.",
     "tag": "adopt",
     "why_now": "Why this matters now."
@@ -56,12 +58,63 @@ Use this JSON structure:
       "headline": "Concrete signal headline",
       "source": "Source Name",
       "url": "https://example.com/source",
+      "date": "June 4, 2026",
+      "take": "Personal editorial take for Alex.",
+      "tag": "try"
+    },
+    {
+      "headline": "Second concrete signal headline",
+      "source": "Another Source",
+      "url": "https://example.com/source-2",
+      "date": "June 4, 2026",
+      "take": "Personal editorial take for Alex.",
+      "tag": "try"
+    },
+    {
+      "headline": "Third concrete signal headline",
+      "source": "Technical Source",
+      "url": "https://example.com/source-3",
+      "date": "June 4, 2026",
+      "take": "Personal editorial take for Alex.",
+      "tag": "track"
+    },
+    {
+      "headline": "Fourth concrete signal headline",
+      "source": "Community Source",
+      "url": "https://example.com/source-4",
+      "date": "June 4, 2026",
+      "take": "Personal editorial take for Alex.",
+      "tag": "track"
+    },
+    {
+      "headline": "Fifth concrete signal headline",
+      "source": "Release Notes",
+      "url": "https://example.com/source-5",
+      "date": "June 4, 2026",
+      "take": "Personal editorial take for Alex.",
+      "tag": "note"
+    },
+    {
+      "headline": "Sixth concrete signal headline",
+      "source": "Model Lab",
+      "url": "https://example.com/source-6",
+      "date": "June 4, 2026",
+      "take": "Personal editorial take for Alex.",
+      "tag": "adopt"
+    },
+    {
+      "headline": "Seventh concrete signal headline",
+      "source": "Agent Tooling",
+      "url": "https://example.com/source-7",
+      "date": "June 4, 2026",
       "take": "Personal editorial take for Alex.",
       "tag": "try"
     }
   ],
   "radar": [
-    "One sentence on a weaker but worth-watching item."
+    "One sentence on a weaker but worth-watching item.",
+    "Second radar sentence on a weaker but worth-watching item.",
+    "Third radar sentence if there is enough signal."
   ],
   "one_move": "One concrete move Alex should make today."
 }
@@ -76,7 +129,7 @@ Use tags deliberately:
 - `track`: monitor because it may affect near-term decisions.
 - `note`: useful context with no immediate action.
 
-Target distribution: 1 `adopt`, 2-3 `try`, 1-2 `track`, and 1 `note`.
+Target distribution: 1-2 `adopt`, 2-3 `try`, 2-3 `track`, and 1-2 `note`.
 
 ## Brevity Rules
 
@@ -84,7 +137,7 @@ Top story: 3-4 sentences in the take, plus a short `why_now`.
 
 Signals: 1-2 sentences each.
 
-Radar: 1 sentence each.
+Radar: 2-3 items, 1 sentence each.
 
 One move: 1 sentence.
 
