@@ -16,6 +16,7 @@ class MorningBriefingPipelineTests(unittest.TestCase):
         self.assertIn("Radar", html)
         self.assertIn("One move today", html)
         self.assertIn("Issue metadata", html)
+        self.assertIn("ADOPT", html)
 
     def test_editorial_dict_build_uses_source_payload(self) -> None:
         editorial = dict(_DEMO_EDITORIAL)

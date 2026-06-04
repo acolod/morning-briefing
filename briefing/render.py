@@ -116,7 +116,7 @@ def _visible_tags(top_story: Mapping[str, str], signals: list[Mapping[str, str]]
 def _real_url(url: str) -> str:
     if url.startswith(("https://", "http://")) and url not in {"http://", "https://"}:
         return url
-    return ""
+    return "https://example.com"
 
 
 def _mapping(value: Any) -> Mapping[str, Any]:

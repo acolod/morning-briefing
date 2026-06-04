@@ -2,31 +2,31 @@
 
 ## Files to create
 
-- `tests/test_renderer.py`: new primary test suite for the editorial JSON renderer, CLI demo mode, malformed JSON fallback, output writing, retired phrase removal, tag rendering, links, metadata, radar, and one-move sections.
+- None. The project already has the expected package, template, config, and test files.
 
 ## Files to modify
 
-- `briefing/build.py`: replace the gathered/ranked production pipeline with editorial JSON loading. Add `--editorial-json FILE`, keep `--demo`, keep atomic `--output FILE`, expose `_DEMO_EDITORIAL`, and keep optional article-list compatibility by converting articles to editorial-shaped demo content only for tests/backward callers.
-- `briefing/render.py`: make `render()` accept editorial dictionaries directly, normalize/fill missing editorial fields, validate action tags, sanitize article URLs, and pass only editorial-rendering context to Jinja.
-- `templates/daily-brief.html`: strip all retired/static sections and render only top rail metadata, top story, signals, radar, one move, issue metadata footer, and footrail. Preserve the dark near-black/amber visual system, Google Fonts, grid texture overlay, toprail/footrail, and mobile breakpoints.
-- `briefing/config.py`: simplify config to render settings only: timezone, title, issue prefix, footer note, version/source-window style values as needed by the renderer.
-- `config.yaml`: remove `search_queries`, `categories`, and `ranking`; keep only `render` settings.
-- `briefing/__init__.py`: simplify exports so importing the package no longer depends on ranking/gathering as the main pipeline.
-- `tests/test_smoke.py` and `tests/test_pipeline.py`: either remove old ranking/pipeline expectations or reduce them to compatibility checks that do not conflict with the editorial architecture.
+- `briefing/build.py`: keep the editorial JSON entry point as the primary CLI path, preserve `--demo`, preserve atomic `--output`, and keep article-list compatibility as a thin fallback.
+- `briefing/render.py`: keep editorial normalization, but harden URL handling so rendered anchors never receive `#` or an empty href. Preserve tag validation for exactly `adopt`, `try`, `track`, and `note`.
+- `templates/daily-brief.html`: keep only editorial sections, add the missing issue metadata footer with date, published time, and issue number, keep footrail, and restore both `<940px` and `<620px` responsive breakpoints.
+- `briefing/config.py`: keep only render settings plus small compatibility helpers for older callers.
+- `config.yaml`: keep render settings only.
+- `briefing/rank.py`: simplify into a compatibility utility that no longer depends on removed `ranking` and `categories` config fields.
+- `tests/test_renderer.py`: ensure the requested renderer, tag, link, retired-phrase, metadata, malformed JSON, CLI demo, and output-file tests cover the new contract.
+- `tests/test_smoke.py` and `tests/test_pipeline.py`: keep only smoke and compatibility assertions aligned with the editorial renderer.
 
 ## Files to delete or simplify
 
-- `briefing/rank.py`: leave untouched as an optional utility unless old tests force removal; it will no longer be imported by `build.py`.
-- `briefing/gather.py`: leave untouched as an optional utility unless old tests force removal; it will no longer be imported by `build.py`.
-- `momentum.json`: do not modify or commit; no longer part of the renderer path.
+- `briefing/gather.py`: keep as an optional utility; it is no longer imported by the build path.
+- `briefing/rank.py`: simplify rather than delete, to avoid breaking older imports while removing old keyword/category scoring assumptions.
+- `momentum.json`, old briefs, cache files, and pycache: do not modify, stage, or commit.
 
 ## Test plan
 
-- Write `tests/test_renderer.py` first with the requested 12 tests.
-- Run the renderer tests before implementation to verify the old architecture fails the new contract.
-- Implement the minimal editorial renderer path.
-- Update or remove legacy test assertions that require old sections such as story treatment, read-next delivery, ranking category annotations, or gathered article pipeline behavior.
+- Run the renderer tests before implementation to confirm the remaining contract gaps fail.
+- Implement the smallest changes needed for issue metadata footer, link hardening, responsive breakpoints, and ranking compatibility.
 - Run `python -m pytest tests/ -v` until the full suite passes.
+- Run the exact CLI verification commands from the request after tests pass.
 
 ## Verification steps
 
@@ -35,5 +35,5 @@
 3. `python -m briefing.build --demo` and confirm output does not contain `RuntimeWarning`
 4. `python -m briefing.build --demo | grep -c 'href="#'`
 5. Create `test-editorial.json`, then run `python -m briefing.build --editorial-json test-editorial.json`
-6. Verify the generated HTML structure starts with `<!DOCTYPE html>`, contains the required sections, and has no retired static phrases or placeholder article links.
+6. Verify the generated HTML structure starts with `<!DOCTYPE html>`, includes top story, signals, radar, one move, issue metadata, and footrail, and contains no retired static phrases or placeholder article links.
 7. Check `git status --short`, stage only scoped source/test/config/plan changes, and commit with a message summarizing the architectural shift.

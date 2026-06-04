@@ -4,6 +4,8 @@ from markupsafe import escape
 
 from briefing.build import _DEMO_EDITORIAL, build
 from briefing.config import load_config
+from briefing.gather import Article
+from briefing.rank import rank
 from briefing.render import render
 
 
@@ -14,7 +16,8 @@ def test_empty_editorial_renders():
 
     assert html.startswith("<!DOCTYPE html>")
     assert "No supporting signals in this issue." in html
-    assert "No radar items in this issue." in html
+    assert "Top story" in html
+    assert "One move today" in html
 
 
 def test_demo_editorial_renders():
@@ -23,7 +26,7 @@ def test_demo_editorial_renders():
     html = render(_DEMO_EDITORIAL, config=config)
 
     assert "</html>" in html
-    assert "Top story" in html
+    assert "ADOPT" in html
 
 
 def test_malformed_articles_file_fallback(tmp_path):
@@ -49,3 +52,21 @@ def test_build_with_article_compatibility():
 
     assert "Hermes agents improve recovery loops" in html
     assert "https://example.com/hermes-recovery" in html
+
+
+def test_rank_compatibility_without_ranking_config():
+    ranked = rank(
+        [
+            Article(
+                title="Hermes recovery loops",
+                url="https://example.com/hermes",
+                source="Example",
+                description="Agent recovery loop note.",
+                content_text="",
+            )
+        ],
+        config=load_config(Path("config.yaml")),
+    )
+
+    assert len(ranked) == 1
+    assert ranked[0].article.title == "Hermes recovery loops"

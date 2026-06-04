@@ -42,10 +42,22 @@ def test_all_tags_render():
 
 
 def test_all_links_real():
-    html = render(copy.deepcopy(_DEMO_EDITORIAL))
+    editorial = copy.deepcopy(_DEMO_EDITORIAL)
+    editorial["signals"].append(
+        {
+            "headline": "Invalid signal URL should not render a placeholder href",
+            "source": "Bad Source",
+            "url": "#",
+            "take": "Invalid links should be normalized before rendering.",
+            "tag": "note",
+        }
+    )
+
+    html = render(editorial)
     hrefs = re.findall(r'href="([^"]+)"', html)
 
     assert 'href="#"' not in html
+    assert 'href=""' not in html
     assert hrefs
     assert all(href.startswith(("https://", "http://")) for href in hrefs)
 
@@ -90,7 +102,8 @@ def test_empty_editorial():
 
     assert html.startswith("<!DOCTYPE html>")
     assert "No supporting signals in this issue." in html
-    assert "No radar items in this issue." in html
+    assert "Top story" in html
+    assert "One move today" in html
 
 
 def test_malformed_json(tmp_path, capsys):
@@ -108,6 +121,10 @@ def test_issue_metadata():
     editorial = copy.deepcopy(_DEMO_EDITORIAL)
     html = render(editorial)
 
+    assert "Issue metadata" in html
+    assert editorial["issue"]["date"] in html
+    assert editorial["issue"]["time"] in html
+    assert f"{editorial['issue']['number']:03d}" in html
     assert str(editorial["issue"]["sources_scanned"]) in html
     assert str(editorial["issue"]["articles_read"]) in html
 

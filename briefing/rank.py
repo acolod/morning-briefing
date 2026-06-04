@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Iterable, Sequence
+from typing import Any, Sequence
 
-from .config import BriefingConfig
 from .gather import Article
 
 
@@ -20,10 +18,11 @@ class RankedArticle:
 
 def rank(
     articles: Sequence[Article],
-    config: BriefingConfig,
+    config: Any | None = None,
     momentum: dict[str, float] | None = None,
     now: datetime | None = None,
 ) -> list[RankedArticle]:
+    """Compatibility scorer retained for callers outside the renderer path."""
     momentum = momentum or {}
     now = now or datetime.now(timezone.utc)
     ranked: list[RankedArticle] = []
@@ -34,35 +33,23 @@ def rank(
 
 def _score_article(
     article: Article,
-    config: BriefingConfig,
+    config: Any | None,
     momentum: dict[str, float],
     now: datetime,
 ) -> RankedArticle:
     text = " ".join(part for part in [article.title, article.description, article.content_text] if part).lower()
     days_old = _days_old(article.date, now)
-    recency_bonus = config.ranking.recency_boost / (1.0 + (days_old / max(config.ranking.recency_half_life_days, 0.1)))
-    decay_penalty = days_old * config.ranking.stale_interest_decay
-
-    best_category = "general_ai"
-    best_score = 0
-    best_keywords: tuple[str, ...] = ()
-
-    for name, category in config.categories.items():
-        matched = tuple(keyword for keyword in category.keywords if keyword in text)
-        keyword_score = float(len(matched))
-        weighted_score = keyword_score * category.weight
-        momentum_bonus = momentum.get(name, 0.0) * config.ranking.momentum_multiplier
-        score = weighted_score + recency_bonus + momentum_bonus - decay_penalty
-        if matched and score > best_score and score > 0:
-            best_score = score
-            best_category = name
-            best_keywords = matched
+    matched_keywords = tuple(keyword for keyword in momentum if keyword.lower() in text)
+    momentum_bonus = sum(momentum[keyword] for keyword in matched_keywords)
+    recency_bonus = 1.0 / (1.0 + days_old)
+    content_bonus = min(len(text) / 1000.0, 1.0)
+    score = recency_bonus + content_bonus + momentum_bonus
 
     return RankedArticle(
         article=article,
-        score=round(best_score, 4),
-        category=best_category,
-        matched_keywords=best_keywords,
+        score=round(score, 4),
+        category="compatibility",
+        matched_keywords=matched_keywords,
         days_old=round(days_old, 3),
     )
 
