@@ -1,0 +1,67 @@
+{
+  "issue": {
+    "number": 3,
+    "date": "June 4, 2026",
+    "time": "6:30 AM PT",
+    "sources_scanned": 27,
+    "articles_read": 12
+  },
+  "top_story": {
+    "headline": "Hermes Agent's v0.15 stabilization finally removes the obvious plugin and Docker footguns",
+    "source": "GitHub Releases",
+    "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.29.2",
+    "take": "v0.15.1 fixed the runtime bugs that would poison real use — loopback dashboard reload storms, Docker MCP bare-command resolution, and safer insecure binding — and v0.15.2 closes the packaging gap by actually shipping bundled plugin manifests in wheel and sdist. For your day-to-day Hermes work, that means the plugin/gateway/Docker baseline is finally clean enough to treat as a stable substrate instead of carrying local caveats in your head.",
+    "tag": "adopt",
+    "why_now": "You're actively building on skills, plugins, gateway, and cron; every feature stacked on top of a flaky packaging/runtime base compounds the pain."
+  },
+  "signals": [
+    {
+      "headline": "The MCP release candidate is the first version that really looks production-shaped",
+      "source": "MCP Blog",
+      "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
+      "take": "The important shift is operational, not cosmetic: stateless transport, first-class Tasks, MCP Apps, stronger auth, and a deprecation policy. If Hermes is going to lean harder on remote MCP servers and gateway mediation, this is the spec to prototype against now so you don't bake session-bound assumptions into plugins.",
+      "tag": "try"
+    },
+    {
+      "headline": "vLLM 0.22.0 looks like the strongest open-model serving release of the week",
+      "source": "GitHub Releases",
+      "url": "https://github.com/vllm-project/vllm/releases/tag/v0.22.0",
+      "take": "DeepSeek V4 hardening, MRv2 moving toward the default path, multi-tier KV offload, and more multimodal/tool-calling fixes all point the same way: vLLM is where serious open-model serving is consolidating. For your local eval and agent-serving lane, this is the release worth benchmarking before you assume llama.cpp or Ollama should carry everything.",
+      "tag": "try"
+    },
+    {
+      "headline": "Ollama's Gemma 4 path is open now — but not yet boring",
+      "source": "GitHub Releases",
+      "url": "https://github.com/ollama/ollama/releases/tag/v0.30.4",
+      "take": "v0.30.3 landed gemma4-12b support and v0.30.4 immediately followed with a llama.cpp bump plus a documented floating-point crash on gemma4:12b. Translation: useful for a local voice/vision sandbox, not something to silently bless for unattended agent jobs yet.",
+      "tag": "try"
+    },
+    {
+      "headline": "A2A is maturing into the clean agent boundary next to MCP",
+      "source": "GitHub",
+      "url": "https://github.com/a2aproject/A2A",
+      "take": "The framing is now explicit: Agent Cards, JSON-RPC over HTTP, async and streaming flows, and long-running opaque agent collaboration, with MCP called out as the complementary tool layer. That's a strong architectural hint for Hermes: keep MCP as tool/data access, and test A2A-style handoffs only at the agent boundary.",
+      "tag": "track"
+    },
+    {
+      "headline": "Codex keeps drifting from chat assistant toward workflow runtime",
+      "source": "OpenAI Developers",
+      "url": "https://developers.openai.com/codex/changelog",
+      "take": "Goal mode, plugin sharing, better browser use, and the new Sites surface all point in the same direction: coding agents are becoming reusable execution environments, not just terminals with autocomplete. That matters for your Hermes/Codex operator split because the leverage is increasingly in reusable bundles and safe long-horizon delegation contracts.",
+      "tag": "note"
+    },
+    {
+      "headline": "Claude Opus 4.8 raises the bar on long-horizon coding competition",
+      "source": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-opus-4-8",
+      "take": "Anthropic is pairing a stronger coding model with dynamic workflows that can fan out hundreds of subagents inside Claude Code. Even if Codex stays your implementation default, this is the benchmark competitor to keep in view for long-running coding and a reminder that multi-agent execution is being productized fast.",
+      "tag": "note"
+    }
+  ],
+  "radar": [
+    "Remote agent infrastructure is separating into two layers: stateless MCP for tools, tasks, and UI surfaces, and A2A for opaque agent-to-agent collaboration — design Hermes so those boundaries stay clean.",
+    "Local inference is splitting by job: Ollama remains the fastest path to trying a model, vLLM is becoming the serious serving layer, and llama.cpp head continues to move fastest on low-level modality support and compatibility fixes.",
+    "Coding agents are converging on the same primitives — long-running goal execution, reusable bundles, browser/computer use, and hosted artifacts — so delegation discipline matters more than feature checklists now."
+  ],
+  "one_move": "Upgrade your active Hermes dev environment to v0.15.2 today, then run one focused smoke matrix: bundled plugin install from wheel, Docker bare-command MCP launch, loopback dashboard load, and kanban worker termination. Rationale: it locks in the newly-stabilized Hermes baseline before you spend another day building on top of assumptions that were broken a week ago."
+}

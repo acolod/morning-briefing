@@ -1,0 +1,98 @@
+[
+  {
+    "title": "State of AI Agent Memory 2026: Benchmarks, Architectures & Production Gaps",
+    "url": "https://mem0.ai/blog/state-of-ai-agent-memory-2026",
+    "source": "Mem0",
+    "description": "First-party benchmark data across 10 memory approaches and 21 integrations. Hybrid approaches combining vector similarity with structured metadata filtering outperform pure vector search by significant margins. Memory is now a first-class architectural component in agent systems.",
+    "content_text": "AI agent memory benchmarks architectures production gaps. Mem0 benchmarked ten different memory approaches across 21 integrations finding significant variance in retrieval accuracy and latency. In 2026 memory is a first-class architectural component with its own benchmark suite and research literature. Key findings include hybrid approaches combining vector similarity with structured metadata filtering outperform pure vector search. Layered memory combining working memory summaries artifacts and long-term preferences outperforms single-vector-store approaches. Tool-calling memory reliability remains a key open problem with production gaps between research benchmarks and real-world agent deployments.",
+    "date": "2026-06-04T06:00:00+00:00"
+  },
+  {
+    "title": "The State of AI Agent Memory in 2026: What the Research Actually Shows",
+    "url": "https://dev.to/vektor_memory_43f51a32376/the-state-of-ai-agent-memory-in-2026-what-the-research-actually-shows-3aja",
+    "source": "DEV Community",
+    "description": "The research consensus in early 2026 is that agent memory is moving fast but remains genuinely early. The ECAI paper describes the Mem0 approach as a meaningful step toward AI agents that truly maintain long-term context — not a solved problem, but a meaningful step.",
+    "content_text": "Agent memory research consensus 2026 moving fast but genuinely early. ECAI paper describes Mem0 approach as meaningful step toward AI agents that maintain long-term context. Not a solved problem but meaningful progress. Key challenges include reliable recall across sessions handling ambiguity in user preferences and maintaining consistent agent behavior over extended interactions. Tool use memory is identified as especially challenging since agents must remember both what tools exist and how to use them effectively over time.",
+    "date": "2026-06-04T05:00:00+00:00"
+  },
+  {
+    "title": "12 CLI Tools That Are Redefining Developer Workflows",
+    "url": "https://www.qodo.ai/blog/best-cli-tools/",
+    "source": "Qodo",
+    "description": "A comprehensive guide to 12 CLI tools actively embedded in real engineering workflows. From AI-powered coding assistants like Qodo Command, Amazon Q CLI, and Codex CLI to cloud deployment tools and developer productivity utilities. The CLI is evolving into a programmable context-aware interface.",
+    "content_text": "CLI tools redefining developer workflows AI assistants terminal automation. The CLI is evolving into a programmable context-aware interface that handles full scope of developer workflow. Tools covered include Qodo Command with configurable agent workflows MCP integration and CI/CD pipeline support. Amazon Q CLI Gemini CLI Codex CLI and Grok CLI bring AI assistance directly to terminal. Cloud deployment tools like AWS CLI gcloud CLI and Pulstack enable provisioning without web consoles. Developer productivity tools GitHub CLI Lazygit and FFmpeg streamline repo management staging and media processing. Modern workflows show CLIs becoming smarter and more context-aware reducing context switching for developers.",
+    "date": "2026-06-04T04:00:00+00:00"
+  },
+  {
+    "title": "DeepSeek V3.2 API Benchmarks: Latency, Throughput & Cost",
+    "url": "https://deepinfra.com/blog/deepseek-v3-2-api-benchmarks",
+    "source": "DeepInfra",
+    "description": "DeepSeek V3.2 API performance benchmarks across latency, throughput, and cost efficiency. Also covers new models including DeepSeek V4 Flash (284B total, 13B active, $0.01/M input), DeepSeek V4 Pro (1.6T parameters, $0.13/M input), Qwen3-TTS, and Kimi K2.6 with pricing and latency comparisons.",
+    "content_text": "DeepSeek V3.2 API benchmarks latency throughput cost. V3.2 introduces DeepSeek Sparse Attention DSA for fine-grained sparse attention reducing training and inference cost while preserving quality in long-context scenarios. New models on platform include DeepSeek V4 Flash MoE 284B total 13B active 1M context at $0.01/M input and $0.02/M output. DeepSeek V4 Pro with 1.6T parameters 49B active priced at $0.13/M input $0.26/M output. Qwen3-TTS model supports 10 languages voice cloning from 3-second samples and streaming with 97ms first-byte latency. Kimi K2.6 open-source multimodal agentic model for long-horizon coding. Nvidia Nemotron 3 Nano Omni 30B multimodal MoE. Pricing landscape shows flash models under $0.01/M input competing on cost-performance ratio.",
+    "date": "2026-06-04T03:00:00+00:00"
+  },
+  {
+    "title": "AI Model Updates Today (June 2026) – Latest AI Model Releases",
+    "url": "https://llm-stats.com/llm-updates",
+    "source": "LLM Stats",
+    "description": "Track recent AI model releases, API changes, pricing updates, and feature launches across 500+ language models. New reasoning models and flash-tier variants are reshaping the pricing landscape with sub-dollar models matching flagship performance on agentic coding tasks.",
+    "content_text": "AI model updates June 2026 latest releases pricing API changes. The AI industry is releasing models at unprecedented rate. Capabilities that seemed cutting-edge months ago are now baseline expectations. Reasoning models trading speed for accuracy are becoming standard across frontier models. Flash-tier models deliver GPT-4-level performance at dramatically lower costs. Pricing latency and feature updates from inference providers show sub-dollar models matching flagship performance on agentic coding tasks. Context windows expanding to 1M tokens becoming standard. Latest models include Gemini 3.5 Flash Qwen3.6-35B-A3B Step-3.5-Flash and GLM-5.1.",
+    "date": "2026-06-04T02:00:00+00:00"
+  },
+  {
+    "title": "I Shipped an Indie Dev Playbook Ebook in 1 Day — How My AI CEO Drafted It",
+    "url": "https://dev.to/kerfiq/i-shipped-an-indie-dev-playbook-ebook-in-1-day-full-content-how-my-ai-ceo-drafted-it-iji",
+    "source": "DEV Community",
+    "description": "An indie developer shipped a 38,000-word ebook in 1 day using Claude Opus 4.7 as an AI CEO. Covers multi-brand cold-start tax, AI CEO operating model, and 7-framework strategic analysis — all drafted in 1 cycle with AI assistance.",
+    "content_text": "Indie developer shipped 38000-word ebook in one day using AI Claude Opus 4.7. Full content covers multi-brand cold-start tax AI CEO operating model 7-framework strategic analysis. Drafted entirely in one cycle with AI assistance. Demonstrates practical AI shipping workflow for indie developers building and shipping products rapidly with AI collaboration rather than just optimizing tooling setups.",
+    "date": "2026-06-04T01:00:00+00:00"
+  },
+  {
+    "title": "Top 20 ElevenLabs TTS Alternatives for Natural Voice AI",
+    "url": "https://voice.ai/hub/tts/elevenlabs-tts/",
+    "source": "Voice.ai",
+    "description": "A comprehensive comparison of ElevenLabs TTS alternatives for natural voice AI. Covers voice cloning features, multilingual support, and which providers best fit specific use cases. AI voice agents give freedom to choose from multiple speech synthesis providers.",
+    "content_text": "ElevenLabs TTS alternatives natural voice AI comparison. AI voice agents provide freedom to choose from multiple speech synthesis providers and blend different TTS engines for specific use cases. Covering voice cloning features multilingual support and provider comparisons. Key players in the voice AI space include ElevenLabs with realistic AI voice audio voice cloning and multilingual capabilities. The landscape shows increasing competition among TTS providers with specialized solutions for different use cases from customer support agents to content creation.",
+    "date": "2026-06-04T00:00:00+00:00"
+  },
+  {
+    "title": "How to Create Stable Video Diffusion Videos Using ComfyUI",
+    "url": "https://www.geeky-gadgets.com/stable-video-diffusion/",
+    "source": "Geeky Gadgets",
+    "description": "Stable Video Diffusion is an AI video generation technology that creates dynamic videos from static images or text. ComfyUI provides a powerful node-based workflow for leveraging Stable Video Diffusion models, enabling high frame rates and flexible pipeline composition.",
+    "content_text": "Stable Video Diffusion ComfyUI video generation workflow. AI video generation technology creates dynamic videos from static images or text. ComfyUI provides powerful node-based workflow for Stable Video Diffusion models. Efficient workflows enable converting images to videos ensuring high frame rates through flexible pipeline composition. The combination of Stable Video Diffusion and ComfyUI presents a powerful duo for video generation from static inputs enabling fast concept work and internal prototyping.",
+    "date": "2026-06-04T00:30:00+00:00"
+  },
+  {
+    "title": "Nvidia Corners the AI Agent Stack — GTC Taipei Keynote",
+    "url": "https://www.therundown.ai/p/nvidia-corners-the-ai-agent-stack",
+    "source": "The Rundown AI",
+    "description": "Nvidia used GTC Taipei to ship its full AI agent stack including Cosmos 3 for world models, Nemotron 3 Ultra for reasoning, and RTX Spark for edge deployment. The company is positioning to own the agent infrastructure layer from training to inference.",
+    "content_text": "Nvidia AI agent stack GTC Taipei Cosmos 3 world models Nemotron 3 Ultra reasoning RTX Spark edge deployment. Nvidia shipping complete AI agent stack positioning to own agent infrastructure layer from training to inference. Cosmos 3 provides world model capabilities Nemotron 3 Ultra handles advanced reasoning and RTX Spark enables edge deployment. This vertical integration strategy puts Nvidia at the center of AI agent infrastructure similar to its dominance in GPU compute.",
+    "date": "2026-06-04T05:30:00+00:00"
+  },
+  {
+    "title": "Google Gemini 3.5 Flash: Smarter, Faster, Cheaper",
+    "url": "https://llm-stats.com/ai-news",
+    "source": "LLM Stats",
+    "description": "Google optimized Gemini Flash to solve the latency-to-cost ratio bottleneck. When a sub-dollar model beats flagship performance on agentic coding, the market for expensive reasoning models starts to evaporate. Major pricing disruption in the model market.",
+    "content_text": "Google Gemini 3.5 Flash latency cost ratio model pricing disruption. Sub-dollar model beating flagship performance on agentic coding tasks signals major shift in model market. When a $0.50 model can beat flagship performance the market for expensive reasoning models starts to evaporate. Flash-tier models are redefining the cost-performance curve and forcing premium model providers to justify their pricing premiums.",
+    "date": "2026-06-03T18:00:00+00:00"
+  },
+  {
+    "title": "Kiro CLI — New AI Agent CLI with MCP Support, Custom Agents, and Team Workflows",
+    "url": "https://kiro.dev/cli/",
+    "source": "Kiro",
+    "description": "Kiro CLI offers interactive development chat, custom agent creation for specialized workflows, team-level best practices via steering files, MCP server integrations, context-aware autocomplete, and smart hooks for workflow automation.",
+    "content_text": "Kiro CLI new AI assistant terminal tool custom agents MCP servers team steering files workflow automation. Kiro CLI brings interactive AI chat to the terminal. Supports custom agent creation MCP server integrations for connecting external tools team-level standardization through steering files and smart hooks for automating repetitive tasks. Latest in growing trend of AI-powered developer CLI tools competing with Codex CLI Claude Code and similar offerings.",
+    "date": "2026-06-04T06:30:00+00:00"
+  },
+  {
+    "title": "Qwen3-TTS: Alibaba's Advanced Text-to-Speech Model with Voice Cloning",
+    "url": "https://deepinfra.com/models/Qwen/Qwen3-TTS",
+    "source": "DeepInfra",
+    "description": "Qwen3-TTS by Alibaba delivers stable, expressive, low-latency speech generation across 10 languages. Features 9 preset voices, voice cloning from 3-second audio samples, instruction-based tone control, and streaming with ~97ms first-byte latency. Built on 1.7B parameter architecture.",
+    "content_text": "Qwen3-TTS Alibaba text-to-speech voice cloning 10 languages streaming. Advanced TTS model delivering stable expressive low-latency speech generation. 9 preset voices covering diverse genders ages and accents. Voice cloning from short 3-second audio samples. Instruction control for tone emotion and speaking style via natural language. Streaming support with 97ms first-byte latency. Multiple output formats WAV MP3 FLAC PCM. 1.7B parameter architecture using discrete multi-codebook language modeling for end-to-end speech synthesis without cascading errors.",
+    "date": "2026-06-04T04:30:00+00:00"
+  }
+]

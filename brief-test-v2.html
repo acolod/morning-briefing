@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morning AI Brief</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    :root {
+      color-scheme: dark;
+      --bg: #060606;
+      --panel: rgba(18, 18, 18, 0.88);
+      --panel-soft: rgba(255, 255, 255, 0.02);
+      --line: rgba(255, 236, 209, 0.11);
+      --line-strong: rgba(255, 178, 78, 0.28);
+      --text: #f3eee5;
+      --muted: #b9af9f;
+      --dim: #867c6e;
+      --accent: #f4a84d;
+      --accent-2: #ffd7a4;
+      --adopt: #7cd889;
+      --try: #f4a84d;
+      --track: #8bb3ff;
+      --note: #867c6e;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.44);
+      --max: 740px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      letter-spacing: 0;
+      background: linear-gradient(180deg, #040404 0%, var(--bg) 38%, #050505 100%);
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 100% 4px, 4px 100%;
+      opacity: 0.055;
+      mix-blend-mode: soft-light;
+    }
+
+    .shell {
+      width: min(calc(100% - 20px), var(--max));
+      margin: 0 auto;
+      padding: 14px 0 40px;
+    }
+
+    .frame {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .toprail, .footrail {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(8,8,8,0.62);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: var(--dim);
+    }
+    .toprail { border-bottom: 1px solid var(--line); }
+    .footrail { border-top: 1px solid var(--line); }
+
+    .rail-left, .rail-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(244,168,77,0.10), 0 0 14px rgba(244,168,77,0.18);
+    }
+
+    .rail-title {
+      color: var(--accent-2);
+    }
+
+    .canvas {
+      position: relative;
+      z-index: 1;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section {
+      padding: 16px 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      border: 1px solid var(--line);
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .tag--adopt { color: var(--adopt); background: rgba(124,216,137,0.12); border-color: rgba(124,216,137,0.24); }
+    .tag--try   { color: var(--try);   background: rgba(244,168,77,0.12);  border-color: rgba(244,168,77,0.26); }
+    .tag--track { color: var(--track); background: rgba(139,179,255,0.12); border-color: rgba(139,179,255,0.24); }
+    .tag--note  { color: var(--note);  background: rgba(134,124,110,0.12); border-color: rgba(134,124,110,0.28); }
+
+    .source-label {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+    }
+
+    .headline {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--accent-2);
+    }
+
+    .take {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .why-now {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      color: #edd4b0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .section-header h2 {
+      margin: 0;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: var(--dim);
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .signals {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .signal {
+      display: block;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+    }
+
+    .signal-headline {
+      display: block;
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .signal-source {
+      display: block;
+      margin-top: 3px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+    }
+
+    .signal-tag {
+      display: inline-block;
+      margin-top: 7px;
+    }
+
+    .signal-take {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .radar {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .radar li {
+      position: relative;
+      padding-left: 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .radar li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 5px;
+      height: 5px;
+      border-radius: 1px;
+      background: var(--dim);
+    }
+
+    .one-move {
+      padding: 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(244,168,77,0.08), rgba(244,168,77,0.03));
+    }
+    .one-move p {
+      margin: 0;
+      color: var(--accent-2);
+      font-size: 0.93rem;
+      line-height: 1.55;
+    }
+
+    .footer-note {
+      padding: 14px 16px 10px;
+      border-top: 1px solid var(--line);
+    }
+    .footer-note p {
+      margin: 0;
+      color: var(--dim);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 620px) {
+      .shell {
+        width: min(calc(100% - 10px), var(--max));
+        padding-top: 8px;
+      }
+      .toprail, .footrail {
+        flex-wrap: wrap;
+        padding: 8px 12px;
+      }
+      .headline {
+        font-size: 1.15rem;
+      }
+      .section {
+        padding: 12px 12px 14px;
+      }
+      .signal {
+        padding: 10px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="frame">
+
+      <div class="toprail">
+        <div class="rail-left">
+          <span class="status-dot"></span>
+          <span class="rail-title">Morning AI Brief</span>
+          <span>v2 editorial</span>
+          <span>Issue001</span>
+        </div>
+        <div class="rail-right">
+          <span>June 3, 2026</span>
+          <span>6:30 AM PT</span>
+          <span>32 scanned</span>
+          <span>11 read</span>
+        </div>
+      </div>
+
+      <div class="canvas">
+
+        <div class="section">
+          <div class="top-meta">
+            <span class="tag tag--adopt">ADOPT</span>
+            <span class="source-label">Anthropic Blog</span>
+          </div>
+          <h1 class="headline">
+            <a href="https://anthropic.com/blog/mcp-v2-dynamic-tool-discovery" target="_blank" rel="noopener noreferrer">MCP Protocol v2 Adds Dynamic Tool Discovery</a>
+          </h1>
+          <p class="take">This changes how Hermes agents discover and bind tools at runtime. The old static tool registry approach will need updating, but the flexibility gain — letting agents discover new tools from MCP servers without pre-registration — is significant for multi-server setups.</p>
+          <p class="why-now">→ Your Hermes agent build is at the right stage to adopt this while the spec is fresh.</p>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h2>Signals</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="signals">
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://github.com/ggerganov/llama.cpp/pull/10500" target="_blank" rel="noopener noreferrer">llama.cpp 2x Speculative Decoding Speedup Merged</a>
+              </h3>
+              <span class="signal-source">GitHub · ggerganov/llama.cpp</span>
+              <span class="tag signal-tag tag--try">TRY</span>
+              <p class="signal-take">If you&#39;re running local inference for Hermes test loops or eval suites, this speculative decoding improvement directly reduces latency without model changes. Worth benchmarking this week.</p>
+            </div>
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://openai.com/index/codex-mcp-support" target="_blank" rel="noopener noreferrer">OpenAI Codex Now Supports Custom MCP Servers</a>
+              </h3>
+              <span class="signal-source">OpenAI Developer Blog</span>
+              <span class="tag signal-tag tag--try">TRY</span>
+              <p class="signal-take">Codex can now connect to your own MCP servers. This means you could give Codex direct access to Hermes tools, databases, or deployment environments — turning it from a code editor into a workspace-integrated executor.</p>
+            </div>
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://hermes-agent.nousresearch.com/blog/v2.1-plugins-profiles" target="_blank" rel="noopener noreferrer">Hermes Agent v2.1 Ships Plugin System and Gateway Profiles</a>
+              </h3>
+              <span class="signal-source">Nous Research · Hermes Agent</span>
+              <span class="tag signal-tag tag--track">TRACK</span>
+              <p class="signal-take">Plugin system lets you extend Hermes without forking, and gateway profiles mean different platform configs for different tasks. Both directly relevant to how you&#39;re structuring your Hermes deployment.</p>
+            </div>
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://blog.google/technology/ai/gemini-flash-pricing/" target="_blank" rel="noopener noreferrer">Google Gemini 2.5 Flash Drops to $0.08/M Input Tokens</a>
+              </h3>
+              <span class="signal-source">Google AI Blog</span>
+              <span class="tag signal-tag tag--note">NOTE</span>
+              <p class="signal-take">Price cut makes Gemini a strong candidate for Hermes eval suites and lightweight cron tasks where latency isn&#39;t critical. Good option to add to your provider rotation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h2>Radar</h2>
+            <div class="section-line"></div>
+          </div>
+          <ul class="radar">
+            <li>Agent memory benchmark standardization effort gaining traction — could affect Hermes memory module design in Q3</li>
+            <li>WebGPU shader compilation reaching production quality — potential for browser-based Hermes worker nodes</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h2>One move today</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="one-move">
+            <p>Read the MCP v2 dynamic discovery spec and map it against your current Hermes tool registry. The key question: does dynamic discovery replace or complement your static tool contracts? If they complement, sketch the integration path this week while both the spec and your codebase are fresh.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-note">
+        <p>Rendered from editorial JSON. Curation, takes, tags, and source selection happen upstream in the cron agent.</p>
+      </div>
+
+      <div class="footrail">
+        <div class="rail-left">
+          <span>v2 editorial</span>
+          <span>editorial json renderer</span>
+        </div>
+        <div class="rail-right">
+          <span class="tag tag--adopt">adopt</span>
+          <span class="tag tag--try">try</span>
+          <span class="tag tag--track">track</span>
+          <span class="tag tag--note">note</span>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</body>
+</html>

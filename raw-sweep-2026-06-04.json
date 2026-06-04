@@ -1,0 +1,218 @@
+[
+  {
+    "search": "Hermes Agent ecosystem",
+    "title": "Hermes Agent v0.15.2 (2026.5.29.2)",
+    "source": "GitHub Releases",
+    "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.29.2",
+    "description": "# Hermes Agent v0.15.2 (v2026.5.29.2) **Release Date:** May 29, 2026 ## \ud83d\udc1b Bug Fixes - Packaging): ship bundled plugin.yaml manifests in wheel and sdist ([`827f7f07`](https://github.com/NousResearch/hermes-agent/commit/827f7f07825be57108cbea18325e8f5e9fb5d2f2)) ## \ud83d\udc65 Contributors Thank you to everyone",
+    "date": "2026-05-29T13:37:26Z"
+  },
+  {
+    "search": "Hermes Agent ecosystem",
+    "title": "Hermes Agent v0.15.1 (2026.5.29) \u2014 The Patch Release",
+    "source": "GitHub Releases",
+    "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.29",
+    "description": "# Hermes Agent v0.15.1 (v2026.5.29) **Release Date:** May 29, 2026 **Since v0.15.0:** 28 commits \u00b7 21 merged PRs \u00b7 hotfix release \u00b7 9 contributors > **The Patch Release.** A same-day hotfix for v0.15.0. Headline fix: the dashboard infinite-reload loop that hit anyone running v0.15.0 in loopback mode",
+    "date": "2026-05-29T01:12:15Z"
+  },
+  {
+    "search": "Hermes Agent ecosystem",
+    "title": "Hermes Agent v0.15.0 (2026.5.28) \u2014 The Velocity Release",
+    "source": "GitHub Releases",
+    "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.28",
+    "description": "# Hermes Agent v0.15.0 (v2026.5.28) **Release Date:** May 28, 2026 **Since v0.14.0:** 1,302 commits \u00b7 747 merged PRs \u00b7 1,746 files changed \u00b7 282,712 insertions \u00b7 36,699 deletions \u00b7 560+ issues closed (15 P0, 65 P1, 19 security-tagged) \u00b7 321 community contributors (including co-authors) > **The Veloc",
+    "date": "2026-05-28T17:46:09Z"
+  },
+  {
+    "search": "Local inference vLLM",
+    "title": "v0.22.0",
+    "source": "GitHub Releases",
+    "url": "https://github.com/vllm-project/vllm/releases/tag/v0.22.0",
+    "description": "## Highlights This release features 459 commits from 230 contributors (63 new)! * **DeepSeek V4 maturity**: DeepSeek V4 received a major hardening pass this cycle \u2014 the model was reorganized into a dedicated `vllm/models/deepseek_v4/` package (#43004, #43039, #43073, #43077, #43149), gained NVFP4 fu",
+    "date": "2026-05-29T10:28:13Z"
+  },
+  {
+    "search": "Local inference vLLM",
+    "title": "v0.21.0",
+    "source": "GitHub Releases",
+    "url": "https://github.com/vllm-project/vllm/releases/tag/v0.21.0",
+    "description": "## Highlights This release features 367 commits from 202 contributors (49 new)! * **Transformers v4 deprecated**: This release formally deprecates `transformers` v4 support (#40389). Users should migrate to `transformers` v5. * **C++20 build requirement**: vLLM now requires a C++20-compatible compil",
+    "date": "2026-05-15T08:44:26Z"
+  },
+  {
+    "search": "Local inference vLLM",
+    "title": "v0.20.2",
+    "source": "GitHub Releases",
+    "url": "https://github.com/vllm-project/vllm/releases/tag/v0.20.2",
+    "description": "# vLLM v0.20.2 ## Highlights This release features 6 commits from 6 contributors (0 new)! This is a small patch release with bug fixes for DeepSeek V4, gpt-oss, and Qwen3-VL ### Bug Fixes * **DeepSeek V4 sparse attention**: Re-enable the persistent topk path on Hopper and ensure the memset kernel ru",
+    "date": "2026-05-10T07:37:57Z"
+  },
+  {
+    "search": "Local inference llama.cpp",
+    "title": "b9505",
+    "source": "GitHub Releases",
+    "url": "https://github.com/ggml-org/llama.cpp/releases/tag/b9505",
+    "description": "<details open> server : add header to tools/server/server-http.h (#24089) </details> **macOS/iOS:** - [macOS Apple Silicon (arm64)](https://github.com/ggml-org/llama.cpp/releases/download/b9505/llama-b9505-bin-macos-arm64.tar.gz) - macOS Apple Silicon (arm64, KleidiAI enabled) [DISABLED](https://git",
+    "date": "2026-06-04T11:31:37Z"
+  },
+  {
+    "search": "Local inference llama.cpp",
+    "title": "b9504",
+    "source": "GitHub Releases",
+    "url": "https://github.com/ggml-org/llama.cpp/releases/tag/b9504",
+    "description": "<details open> cmake: skip cvector-generator and export-lora when CPU backend is disabled (#24053) </details> **macOS/iOS:** - [macOS Apple Silicon (arm64)](https://github.com/ggml-org/llama.cpp/releases/download/b9504/llama-b9504-bin-macos-arm64.tar.gz) - macOS Apple Silicon (arm64, KleidiAI enable",
+    "date": "2026-06-04T10:57:32Z"
+  },
+  {
+    "search": "Local inference llama.cpp",
+    "title": "b9503",
+    "source": "GitHub Releases",
+    "url": "https://github.com/ggml-org/llama.cpp/releases/tag/b9503",
+    "description": "<details open> fix(mtmd): handle Gemma 4 audio projector embedding size (#24091) * mtmd: handle Gemma 4 audio projector embedding size * rm projection_dim from clip_n_mmproj_embd --------- Co-authored-by: Xuan Son Nguyen <son@huggingface.co> </details> **macOS/iOS:** - [macOS Apple Silicon (arm64)](",
+    "date": "2026-06-04T10:14:06Z"
+  },
+  {
+    "search": "Local inference Ollama",
+    "title": "v0.30.4",
+    "source": "GitHub Releases",
+    "url": "https://github.com/ollama/ollama/releases/tag/v0.30.4",
+    "description": "## What's Changed * llama.cpp version update by @dhiltgen in https://github.com/ollama/ollama/pull/16463 * Kill llama-server during Windows cleanup by @dhiltgen in https://github.com/ollama/ollama/pull/16458 ## Known Issues * gemma4:12b crash with floating point exception **Full Changelog**: https:/",
+    "date": "2026-06-03T18:48:32Z"
+  },
+  {
+    "search": "Local inference Ollama",
+    "title": "v0.30.3",
+    "source": "GitHub Releases",
+    "url": "https://github.com/ollama/ollama/releases/tag/v0.30.3",
+    "description": "## What's Changed * models: add support for gemma4-12b by @pdevine in https://github.com/ollama/ollama/pull/16457 **Full Changelog**: https://github.com/ollama/ollama/compare/v0.30.2...v0.30.3",
+    "date": "2026-06-03T16:35:43Z"
+  },
+  {
+    "search": "Local inference Ollama",
+    "title": "v0.30.2",
+    "source": "GitHub Releases",
+    "url": "https://github.com/ollama/ollama/releases/tag/v0.30.2",
+    "description": "## What's Changed * feat(launch): show and auto-install Cline CLI by @hoyyeva in https://github.com/ollama/ollama/pull/16402 * log template details to aid troubleshooting by @dhiltgen in https://github.com/ollama/ollama/pull/16403 * cmd/launch: add Qwen code integration by @hoyyeva in https://github",
+    "date": "2026-06-03T00:37:18Z"
+  },
+  {
+    "search": "AI coding tools / Codex CLI",
+    "title": "Build and deploy websites with Sites",
+    "source": "OpenAI Developers",
+    "url": "https://developers.openai.com/codex/changelog",
+    "description": "Sites is now available in preview in the Codex app. Use the Sites plugin to create, save, deploy, and inspect websites, dashboards, internal tools, web apps, and games hosted by OpenAI. Open Sites in the app sidebar to return to your projects and manage hosted environment variables and secrets. Chat",
+    "date": "2026-06-02"
+  },
+  {
+    "search": "AI coding tools / Codex CLI",
+    "title": "Use Codex with Amazon Bedrock",
+    "source": "OpenAI Developers",
+    "url": "https://developers.openai.com/codex/changelog",
+    "description": "Codex can now use supported OpenAI models available through Amazon Bedrock. Configure Amazon Bedrock as your model provider to run Codex locally with AWS-managed authentication, account controls, and billing.",
+    "date": "2026-06-01"
+  },
+  {
+    "search": "AI coding tools / Codex CLI",
+    "title": "Appshots, goal mode, and more <span class=\"text-tertiary\"> 26.519",
+    "source": "OpenAI Developers",
+    "url": "https://developers.openai.com/codex/changelog",
+    "description": "Appshots are now available in the Codex app on macOS. Press both Command keys to send the frontmost app window to Codex with a screenshot and available text, so Codex can work from context in another app without you copying, pasting, or describing it manually. This launch also includes: Goal mode is",
+    "date": "2026-05-21"
+  },
+  {
+    "search": "Model Context Protocol",
+    "title": "The 2026-07-28 MCP Specification Release Candidate",
+    "source": "MCP Blog",
+    "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
+    "description": "The release candidate for MCP 2026-07-28 is now available. It is the largest revision of the protocol since launch and delivers on the 2026 roadmap: a stateless core that scales on ordinary HTTP infrastructure extensions including server-rendered UIs through MCP Apps and long-running work through th",
+    "date": "May 21, 2026"
+  },
+  {
+    "search": "Model Context Protocol",
+    "title": "Expanding the MCP Maintainer Team",
+    "source": "MCP Blog",
+    "url": "https://blog.modelcontextprotocol.io/posts/2026-04-08-maintainer-update/",
+    "description": "I\u2019m happy to share two updates to the maintainer team: Clare Liguori is joining the Core Maintainer group, and Den Delimarsky is joining me as a Lead Maintainer. When we introduced the MCP governance model last summer, the goal was to make sure the protocol could keep growing without any one person ",
+    "date": "April 8, 2026"
+  },
+  {
+    "search": "Model Context Protocol",
+    "title": "Tool Annotations as Risk Vocabulary: What Hints Can and Can't Do",
+    "source": "MCP Blog",
+    "url": "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+    "description": "MCP tool annotations were introduced nearly a year ago as a way for servers to describe the behavior of their tools \u2014 whether they\u2019re read-only, destructive, idempotent, or reach outside their local environment. Since then, the community has filed five independent Specification Enhancement Proposals",
+    "date": "March 16, 2026"
+  },
+  {
+    "search": "Agent-to-agent protocol / A2A",
+    "title": "a2aproject/A2A",
+    "source": "GitHub",
+    "url": "https://github.com/a2aproject/A2A",
+    "description": "Agent2Agent (A2A) is an open protocol enabling communication and interoperability between opaque agentic applications.",
+    "date": "2026-06-04T13:36:19Z"
+  },
+  {
+    "search": "Agent-to-agent protocol / A2A",
+    "title": "docs: add Rust SDK (a2a-rs) reference to README and update linter workflow (#1863)",
+    "source": "GitHub Commits",
+    "url": "https://github.com/a2aproject/A2A/commit/7475dd0d01feb7c0d40b81ca8b3e2cc7b6c54db7",
+    "description": "Agent2Agent (A2A) is an open protocol enabling communication and interoperability between opaque agentic applications.",
+    "date": "2026-06-02T19:08:41Z"
+  },
+  {
+    "search": "Agent-to-agent protocol / A2A",
+    "title": "docs: fix Tutorial 8 AgentExecutor import path (#1884)",
+    "source": "GitHub Commits",
+    "url": "https://github.com/a2aproject/A2A/commit/663a7e559797afd180421228ba361b7f37082bdb",
+    "description": "Agent2Agent (A2A) is an open protocol enabling communication and interoperability between opaque agentic applications.",
+    "date": "2026-06-02T17:52:27Z"
+  },
+  {
+    "search": "Agent evaluation / Inspect",
+    "title": "UKGovernmentBEIS/inspect_ai",
+    "source": "GitHub",
+    "url": "https://github.com/UKGovernmentBEIS/inspect_ai",
+    "description": "Inspect: A framework for large language model evaluations",
+    "date": "2026-06-04T05:41:49Z"
+  },
+  {
+    "search": "Agent evaluation / Inspect",
+    "title": "skip model unavailable errors on bedrock",
+    "source": "GitHub Commits",
+    "url": "https://github.com/UKGovernmentBEIS/inspect_ai/commit/1f9403f172ecc9c3e6f886d69312b99fc0ab40a2",
+    "description": "Inspect: A framework for large language model evaluations",
+    "date": "2026-06-04T01:01:12Z"
+  },
+  {
+    "search": "Agent evaluation / Inspect",
+    "title": "Merge branch 'bowman-apollo-main'",
+    "source": "GitHub Commits",
+    "url": "https://github.com/UKGovernmentBEIS/inspect_ai/commit/ebe7647d72aa7d2d00f907d39171cd5ff3ab4fd4",
+    "description": "Inspect: A framework for large language model evaluations",
+    "date": "2026-06-04T00:41:43Z"
+  },
+  {
+    "search": "Open model / coding model news",
+    "title": "Introducing Claude Opus 4.8 \\ Anthropic",
+    "source": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-opus-4-8",
+    "description": "Our latest model, Claude Opus 4.8, is an upgrade to our Opus class of models, with stronger performance across coding, agentic tasks, and professional work, and the consistency to handle long-running work.",
+    "date": "May 28, 2026"
+  },
+  {
+    "search": "Open model / coding model news",
+    "title": "Introducing Claude Design by Anthropic Labs \\ Anthropic",
+    "source": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-design-anthropic-labs",
+    "description": "Today, we\u2019re launching Claude Design, a new Anthropic Labs product that lets you collaborate with Claude to create polished visual work like designs, prototypes, slides, one-pagers, and more.",
+    "date": ""
+  },
+  {
+    "search": "Open model / coding model news",
+    "title": "Claude is a space to think",
+    "source": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-is-a-space-to-think",
+    "description": "We\u2019ve made a choice: Claude will remain ad-free. We explain why advertising incentives are incompatible with a genuinely helpful AI assistant, and how we plan to expand access without compromising user trust.",
+    "date": ""
+  }
+]

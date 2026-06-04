@@ -1,0 +1,42 @@
+# Output files — not committed
+brief-today.html
+partial-sources.json
+editorial.json
+*.output.html
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Deploy working directory
+deploy/
+
+# Old mockups / plans — keep local only
+Morning AI Brief Mockup*.html
+briefing-v1-plan.md
+IMPLEMENTATION_SPEC.md
+AUDIT_PLAN.md
+AUDIT_FINDINGS.md
+post-deployment-analysis.md
+ui-review-findings.md
+CODEX_IMPLEMENTATION_PLAN.md
+
+# Prompt files
+codex-*-prompt.txt
+codex-prompt.txt
+codex-goal.txt
+cron-prompt.txt
+
+# Transcripts
+CHAT_TRANSCRIPT.json
+
+# Momentum
+momentum.json
+
+# Test data
+test-*.json
+best_score
+
+# Egg info (from editable install)
+morning_briefing.egg-info/

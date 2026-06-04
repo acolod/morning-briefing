@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morning AI Brief</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    :root {
+      color-scheme: dark;
+      --bg: #060606;
+      --bg-soft: #0b0b0b;
+      --panel: rgba(18, 18, 18, 0.88);
+      --panel-2: rgba(22, 22, 22, 0.82);
+      --line: rgba(255, 236, 209, 0.11);
+      --line-strong: rgba(255, 178, 78, 0.28);
+      --text: #f3eee5;
+      --muted: #b9af9f;
+      --dim: #867c6e;
+      --accent: #f4a84d;
+      --accent-2: #ffd7a4;
+      --green: #7cd889;
+      --green-soft: rgba(124, 216, 137, 0.12);
+      --blue: #8bb3ff;
+      --blue-soft: rgba(139, 179, 255, 0.12);
+      --red: #ff8a7d;
+      --red-soft: rgba(255, 138, 125, 0.12);
+      --glow: rgba(244, 168, 77, 0.20);
+      --radius-lg: 18px;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.44);
+      --max: 1160px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      letter-spacing: -0.015em;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(244,168,77,0.10), transparent 26%),
+        radial-gradient(circle at 90% 10%, rgba(139,179,255,0.08), transparent 22%),
+        linear-gradient(180deg, #040404 0%, #070707 38%, #050505 100%);
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 100% 4px, 4px 100%;
+      opacity: 0.055;
+      mix-blend-mode: soft-light;
+    }
+
+    .shell {
+      width: min(calc(100% - 20px), var(--max));
+      margin: 0 auto;
+      padding: 14px 0 30px;
+    }
+
+    .frame {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at top, rgba(244,168,77,0.08), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), transparent 24%);
+      z-index: 0;
+    }
+
+    .toprail,
+    .footrail {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8,8,8,0.56);
+      backdrop-filter: blur(10px);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .footrail {
+      border-bottom: 0;
+      border-top: 1px solid var(--line);
+      background: rgba(10,10,10,0.62);
+    }
+
+    .rail-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(244,168,77,0.10), 0 0 18px var(--glow);
+      animation: pulse 4.2s ease-in-out infinite;
+    }
+
+    .canvas {
+      position: relative;
+      z-index: 1;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.28fr 0.72fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(20,20,20,0.86), rgba(14,14,14,0.76));
+      overflow: hidden;
+    }
+
+    .panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%);
+      opacity: 0.75;
+    }
+
+    .inner {
+      position: relative;
+      z-index: 1;
+      padding: 14px;
+    }
+
+    .microhead {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .headline {
+      margin: 0 0 10px;
+      max-width: 15ch;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: clamp(1.7rem, 2.7vw, 2.45rem);
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      text-wrap: balance;
+    }
+
+    .lede {
+      margin: 0;
+      max-width: 65ch;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.58;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .microcard {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 10px 11px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    }
+
+    .eyebrow {
+      margin-bottom: 6px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+    }
+
+    .microcard strong,
+    .metric strong,
+    .module strong,
+    .step strong,
+    .thumb-copy strong,
+    .caption strong,
+    .meta-item strong {
+      display: block;
+      font-size: 0.93rem;
+      line-height: 1.3;
+      margin-bottom: 5px;
+    }
+
+    .microcard span,
+    .metric p,
+    .module p,
+    .step p,
+    .signal p,
+    .feature li,
+    .linklist a,
+    .linklist small,
+    .caption p,
+    .meta-grid p,
+    .footer-note p,
+    .thumb-copy p {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.48;
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    }
+
+    .metric p,
+    .step p,
+    .module p,
+    .signal p { margin: 0; }
+
+    .signalband {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 16px;
+      padding: 11px 13px;
+      background: linear-gradient(180deg, rgba(244,168,77,0.12), rgba(244,168,77,0.05));
+      box-shadow: inset 0 0 0 1px rgba(244,168,77,0.06);
+    }
+
+    .signalband .label,
+    .section-title h2 {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .signalband .label {
+      color: var(--accent-2);
+      font-size: 0.83rem;
+      white-space: nowrap;
+    }
+
+    .signalband .copy {
+      color: #edd4b0;
+      font-size: 0.89rem;
+      line-height: 1.45;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 12px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      color: var(--accent-2);
+      font-size: 0.98rem;
+    }
+
+    .section-title span {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+    }
+
+    .signals,
+    .stack,
+    .steps,
+    .linklist {
+      display: grid;
+      gap: 8px;
+    }
+
+    .signal,
+    .module,
+    .step {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 11px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.026), rgba(255,255,255,0.014));
+    }
+
+    .signal-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: start;
+      margin-bottom: 7px;
+    }
+
+    .signal small {
+      display: block;
+      margin-bottom: 5px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .signal h3 {
+      margin: 0;
+      font-size: 0.96rem;
+      line-height: 1.34;
+      letter-spacing: -0.02em;
+    }
+
+    .signal h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .signal h3 a:hover {
+      text-decoration: underline;
+    }
+
+    .module a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .module a:hover {
+      text-decoration: underline;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .test { color: var(--green); background: var(--green-soft); border-color: rgba(124,216,137,0.22); }
+    .track { color: var(--blue); background: var(--blue-soft); border-color: rgba(139,179,255,0.22); }
+    .ignore { color: var(--red); background: var(--red-soft); border-color: rgba(255,138,125,0.22); }
+    .learn { color: var(--accent-2); background: rgba(244,168,77,0.12); border-color: rgba(244,168,77,0.24); }
+
+    .feature ul {
+      margin: 0;
+      padding-left: 17px;
+    }
+
+    .feature li + li { margin-top: 7px; }
+
+    .interest-strip {
+      display: grid;
+      grid-template-columns: 1.16fr 0.84fr;
+      gap: 12px;
+    }
+
+    .focus {
+      position: relative;
+      border: 1px solid rgba(139,179,255,0.24);
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(139,179,255,0.12), rgba(139,179,255,0.04));
+    }
+
+    .focus::before {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,179,255,0.55), transparent);
+    }
+
+    .focus .inner p {
+      margin: 0;
+      color: #d5dff2;
+      font-size: 0.9rem;
+      line-height: 1.56;
+    }
+
+    .triple {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .linklist a,
+    .linklist span {
+      display: block;
+      text-decoration: none;
+      color: var(--accent-2);
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+
+    .linklist strong,
+    .linklist small {
+      display: block;
+    }
+
+    .linklist small {
+      margin-top: 4px;
+      color: var(--muted);
+    }
+
+    .linklist a:first-child,
+    .linklist span:first-child { border-top: 0; padding-top: 0; }
+    .linklist a:hover { text-decoration: underline; }
+
+    .sparkline {
+      height: 34px;
+      display: flex;
+      align-items: end;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .sparkline span {
+      display: block;
+      width: 100%;
+      border-radius: 999px 999px 4px 4px;
+      background: linear-gradient(180deg, rgba(244,168,77,0.92), rgba(244,168,77,0.28));
+      box-shadow: 0 0 14px rgba(244,168,77,0.12);
+      animation: shimmer 6s ease-in-out infinite;
+    }
+
+    .sparkline span:nth-child(1) { height: 32%; animation-delay: 0s; }
+    .sparkline span:nth-child(2) { height: 56%; animation-delay: 0.3s; }
+    .sparkline span:nth-child(3) { height: 48%; animation-delay: 0.6s; }
+    .sparkline span:nth-child(4) { height: 74%; animation-delay: 0.9s; }
+    .sparkline span:nth-child(5) { height: 66%; animation-delay: 1.2s; }
+    .sparkline span:nth-child(6) { height: 88%; animation-delay: 1.5s; }
+    .sparkline span:nth-child(7) { height: 64%; animation-delay: 1.8s; }
+
+    .tiny {
+      color: var(--dim);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .visual-panel {
+      min-height: 100%;
+    }
+
+    .visual-card {
+      display: grid;
+      gap: 10px;
+    }
+
+    .thumb-shell {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    }
+
+    .thumb {
+      height: 152px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)),
+        radial-gradient(circle at 72% 24%, rgba(244,168,77,0.28), transparent 23%),
+        linear-gradient(135deg, #0b0b0b, #111111 56%, #0a0a0a);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .thumb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.014) 1px, transparent 1px);
+      background-size: 100% 5px, 5px 100%;
+      opacity: 0.22;
+    }
+
+    .thumb::after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,215,164,0.88);
+    }
+
+    .thumb-copy {
+      padding: 11px 12px 12px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .meta-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 11px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.026), rgba(255,255,255,0.014));
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(244,168,77,0.10), 0 0 14px rgba(244,168,77,0.18); }
+      50% { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(244,168,77,0.12), 0 0 22px rgba(244,168,77,0.28); }
+    }
+
+    @keyframes shimmer {
+      0%, 100% { filter: saturate(1) brightness(1); }
+      50% { filter: saturate(1.12) brightness(1.08); }
+    }
+
+    @media (max-width: 940px) {
+      .hero,
+      .main,
+      .interest-strip,
+      .triple,
+      .hero-grid,
+      .story-strip,
+      .meta-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .shell { width: min(calc(100% - 10px), var(--max)); padding-top: 8px; }
+      .toprail,
+      .footrail,
+      .signalband { grid-template-columns: 1fr; }
+      .signal-top { grid-template-columns: 1fr; }
+      .headline { font-size: 1.55rem; }
+      .canvas,
+      .inner { padding: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="frame">
+      <div class="toprail">
+        <div class="rail-group">
+          <span class="status-dot"></span>
+          <span>/briefs/2026-06-03</span>
+          <span>Morning AI Brief</span>
+          <span>v1 production</span>
+        </div>
+        <div class="rail-group">
+          <span>mode: builder</span>
+          <span>signals: 4</span>
+          <span>delivery: html-first</span>
+          <span>assets: 3 story cues</span>
+        </div>
+      </div>
+
+      <div class="canvas">
+        <section class="hero">
+          <article class="panel">
+            <div class="inner">
+              <div class="microhead">
+                <span>Issue 001 // daily operator memo</span>
+                <span>Wednesday · June 3, 2026 · 9:43 AM PDT</span>
+              </div>
+              <h1 class="headline">DeepSeek V3.2 API Benchmarks: Latency, Throughput &amp; Cost. AI Model Updates Today (June 2026) – Latest AI Model Releases.</h1>
+              <p class="lede">DeepSeek V3.2 API performance benchmarks across latency, throughput, and cost efficiency. Also covers new models including DeepSeek V4 Flash (284B total, 13B active, $0.01/M input), DeepSeek V4 Pro (1.6T parameters, $0.13/M input), Qwen3-TTS, and Kimi K2.6 with pricing and latency comparisons. Track recent AI model releases, API changes, pricing updates, and feature launches across 500+ language models. New reasoning models and flash-tier variants are reshaping the pricing landscape with sub-dollar models matching flagship performance on agentic coding tasks.</p>
+
+              <div class="hero-grid">
+                
+                <div class="microcard">
+                  <div class="eyebrow">Track // DeepInfra</div>
+                  <strong>DeepSeek V3.2 API Benchmarks: Latency, Throughput &amp; Cost</strong>
+                  <span>DeepSeek V3.2 API performance benchmarks across latency, throughput, and cost efficiency. Also covers new models including... Matched model, models, pricing, benchmark; score 5.23.</span>
+                </div>
+                
+                <div class="microcard">
+                  <div class="eyebrow">Track // LLM Stats</div>
+                  <strong>AI Model Updates Today (June 2026) – Latest AI Model Releases</strong>
+                  <span>Track recent AI model releases, API changes, pricing updates, and feature launches across 500+ language models. New reasoning... Matched model, models, pricing, context window; score 5.23.</span>
+                </div>
+                
+                <div class="microcard">
+                  <div class="eyebrow">Today&#39;s shape</div>
+                  <strong>Hermetic Agents is the pressure point.</strong>
+                  <span>Model Landscape appears in 2 of 4 top signals, with evidence from DeepInfra, LLM Stats, and DEV Community.</span>
+                </div>
+                
+              </div>
+            </div>
+          </article>
+
+          <aside class="side-stack">
+            
+            <div class="metric visual-panel">
+              <div class="eyebrow">DeepInfra cue</div>
+              
+              <div class="visual-card">
+                <div class="thumb" aria-hidden="true"></div>
+                <div class="caption">
+                  <strong>DeepSeek V3.2 API Benchmarks: Latency, Throughput &amp; Cost</strong>
+                  <p>Score 5.23; matched model, models, pricing, benchmark; category model landscape.</p>
+                </div>
+              </div>
+              
+              
+            </div>
+            
+            <div class="metric">
+              <div class="eyebrow">Source mix</div>
+              
+              <strong>4 sources in the lead set.</strong>
+              <p>Today&#39;s visible read comes from DeepInfra, LLM Stats, DEV Community, and Qodo.</p>
+              
+              
+            </div>
+            
+            <div class="metric">
+              <div class="eyebrow">Signal shape</div>
+              
+              <strong>Model Landscape is the densest cluster.</strong>
+              <p>Tags come from score and category: Track and Test.</p>
+              
+              
+              <div class="sparkline" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+              
+            </div>
+            
+          </aside>
+        </section>
+
+        <div class="signalband">
+          <div class="label">Theme //</div>
+          <div class="copy">Today&#39;s strongest thread connects model landscape and hermetic agents; start with DeepInfra and LLM Stats before widening the read.</div>
+          <div class="tiny">high signal / low drag</div>
+        </div>
+
+        <div class="story-strip">
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Story treatment</h2>
+                <span>DeepInfra lead</span>
+              </div>
+              <div class="stack">
+                <div class="module">
+                  <div class="eyebrow">Lead evidence</div>
+                  <strong>Anchor the issue on DeepInfra&#39;s model landscape signal.</strong>
+                  <p>DeepSeek V3.2 API performance benchmarks across latency, throughput, and cost efficiency. Also covers new models including DeepSeek V4 Flash (284B total, 13B active... The strongest visual cue is model, models, pricing, benchmark, not generic AI imagery.</p>
+                </div>
+                <div class="module">
+                  <div class="eyebrow">Contrast</div>
+                  <strong>Use LLM Stats to widen the read.</strong>
+                  <p>Pair the lead with &#39;AI Model Updates Today (June 2026) – Latest AI Model Releases&#39; so the page shows both the headline claim and the practical consequence.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <aside class="thumb-shell">
+            <div class="thumb" aria-hidden="true"></div>
+            <div class="thumb-copy">
+              <div class="eyebrow">DeepInfra cue</div>
+              <strong>DeepSeek V3.2 API Benchmarks: Latency, Throughput &amp; Cost</strong>
+              <p>Represent model, models, pricing, benchmark as compact evidence: source, category, score 5.23, and one sentence of context.</p>
+            </div>
+          </aside>
+        </div>
+
+        <section class="main">
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Top signals</h2>
+                <span>what actually matters</span>
+              </div>
+              <div class="signals">
+                
+                <section class="signal">
+                  <div class="signal-top">
+                    <div>
+                      <small>Signal 01</small>
+                      <h3>
+                        
+                        <a href="https://deepinfra.com/blog/deepseek-v3-2-api-benchmarks" target="_blank" rel="noopener noreferrer">DeepSeek V3.2 API Benchmarks: Latency, Throughput &amp; Cost</a>
+                        
+                      </h3>
+                    </div>
+                    <span class="tag track">Track</span>
+                  </div>
+                  <p><strong>Why it matters:</strong> DeepSeek V3.2 API performance benchmarks across latency, throughput, and cost efficiency. Also covers new models including DeepSeek V4 Flash (284B total, 13B active, $0.01/M input), DeepSeek V4 Pro (1.6T... DeepInfra landed in model landscape with model, models, pricing, benchmark matched, age under an hour, score 5.23.</p>
+                </section>
+                
+                <section class="signal">
+                  <div class="signal-top">
+                    <div>
+                      <small>Signal 02</small>
+                      <h3>
+                        
+                        <a href="https://llm-stats.com/llm-updates" target="_blank" rel="noopener noreferrer">AI Model Updates Today (June 2026) – Latest AI Model Releases</a>
+                        
+                      </h3>
+                    </div>
+                    <span class="tag track">Track</span>
+                  </div>
+                  <p><strong>Why it matters:</strong> Track recent AI model releases, API changes, pricing updates, and feature launches across 500+ language models. New reasoning models and flash-tier variants are reshaping the pricing landscape with... LLM Stats landed in model landscape with model, models, pricing, context window matched, age under an hour, score 5.23.</p>
+                </section>
+                
+                <section class="signal">
+                  <div class="signal-top">
+                    <div>
+                      <small>Signal 03</small>
+                      <h3>
+                        
+                        <a href="https://dev.to/vektor_memory_43f51a32376/the-state-of-ai-agent-memory-in-2026-what-the-research-actually-shows-3aja" target="_blank" rel="noopener noreferrer">The State of AI Agent Memory in 2026: What the Research Actually Shows</a>
+                        
+                      </h3>
+                    </div>
+                    <span class="tag test">Test</span>
+                  </div>
+                  <p><strong>Why it matters:</strong> The research consensus in early 2026 is that agent memory is moving fast but remains genuinely early. The ECAI paper describes the Mem0 approach as a meaningful step toward AI agents that truly maintain... DEV Community landed in hermetic agents with agent, agents, tool use, memory matched, age under an hour, score 5.15.</p>
+                </section>
+                
+                <section class="signal">
+                  <div class="signal-top">
+                    <div>
+                      <small>Signal 04</small>
+                      <h3>
+                        
+                        <a href="https://www.qodo.ai/blog/best-cli-tools/" target="_blank" rel="noopener noreferrer">12 CLI Tools That Are Redefining Developer Workflows</a>
+                        
+                      </h3>
+                    </div>
+                    <span class="tag test">Test</span>
+                  </div>
+                  <p><strong>Why it matters:</strong> A comprehensive guide to 12 CLI tools actively embedded in real engineering workflows. From AI-powered coding assistants like Qodo Command, Amazon Q CLI, and Codex CLI to cloud deployment tools and... Qodo landed in dev tooling with developer workflow, developer workflows, cli, automation matched, age under an hour, score 4.70.</p>
+                </section>
+                
+              </div>
+            </div>
+          </article>
+
+          <aside class="panel feature">
+            <div class="inner">
+              <div class="section-title">
+                <h2>For your build journey</h2>
+                <span>practical filter</span>
+              </div>
+              <ul>
+                
+                <li>Start with DeepInfra: turn &#39;DeepSeek V3.2 API Benchmarks: Latency, Throughput &amp; Cost&#39; into one concrete check before opening the rest of the queue.</li>
+                
+                <li>Give model landscape 2 slots; that is where today&#39;s article mix is clustering.</li>
+                
+                <li>Give hermetic agents 1 slot; that is where today&#39;s article mix is clustering.</li>
+                
+                <li>Give dev tooling 1 slot; that is where today&#39;s article mix is clustering.</li>
+                
+              </ul>
+            </div>
+          </aside>
+        </section>
+
+        <section class="interest-strip">
+          <article class="focus">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Rising topic this week</h2>
+                <span>adaptive zone</span>
+              </div>
+              <p>
+                <strong>Hermetic Agents</strong> Hermetic Agents is the strongest adaptive lane right now, with momentum 0.72 and fresh evidence from DEV Community.
+              </p>
+            </div>
+          </article>
+
+          <aside class="steps">
+            
+            <div class="step">
+              <div class="eyebrow">Why it rose</div>
+              <strong>1 top signal point at hermetic agents.</strong>
+              <p>The clearest evidence is DEV Community on &#39;The State of AI Agent Memory in 2026: What the Research Actually Shows&#39;, with agent, agents, tool use, memory matched.</p>
+            </div>
+            
+            <div class="step">
+              <div class="eyebrow">Momentum</div>
+              <strong>Current carryover is 0.72.</strong>
+              <p>The lane is both in the stored momentum file and present in today&#39;s ranked articles.</p>
+            </div>
+            
+          </aside>
+        </section>
+
+        <section class="main">
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Agent / Hermes radar</h2>
+                <span>persistent lane</span>
+              </div>
+              <div class="stack">
+                
+                <div class="module">
+                  <div class="eyebrow">Radar</div>
+                  <strong>
+                    
+                    <a href="https://dev.to/vektor_memory_43f51a32376/the-state-of-ai-agent-memory-in-2026-what-the-research-actually-shows-3aja" target="_blank" rel="noopener noreferrer">The State of AI Agent Memory in 2026: What the Research Actually Shows</a>
+                    
+                  </strong>
+                  <p>The research consensus in early 2026 is that agent memory is moving fast but remains genuinely early. The ECAI paper describes the Mem0 approach as a meaningful step toward AI agents that truly maintain... DEV Community landed in hermetic agents with agent, agents, tool use, memory matched, age under an hour, score 5.15.</p>
+                </div>
+                
+                <div class="module">
+                  <div class="eyebrow">Radar</div>
+                  <strong>
+                    
+                    <a href="https://www.qodo.ai/blog/best-cli-tools/" target="_blank" rel="noopener noreferrer">12 CLI Tools That Are Redefining Developer Workflows</a>
+                    
+                  </strong>
+                  <p>A comprehensive guide to 12 CLI tools actively embedded in real engineering workflows. From AI-powered coding assistants like Qodo Command, Amazon Q CLI, and Codex CLI to cloud deployment tools and... Qodo landed in dev tooling with developer workflow, developer workflows, cli, automation matched, age under an hour, score 4.70.</p>
+                </div>
+                
+                <div class="module">
+                  <div class="eyebrow">Radar</div>
+                  <strong>
+                    
+                    <a href="https://mem0.ai/blog/state-of-ai-agent-memory-2026" target="_blank" rel="noopener noreferrer">State of AI Agent Memory 2026: Benchmarks, Architectures &amp; Production Gaps</a>
+                    
+                  </strong>
+                  <p>First-party benchmark data across 10 memory approaches and 21 integrations. Hybrid approaches combining vector similarity with structured metadata filtering outperform pure vector search by significant... Mem0 landed in hermetic agents with agent, memory matched, age under an hour, score 3.15.</p>
+                </div>
+                
+              </div>
+            </div>
+          </article>
+
+          <aside class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>One move today</h2>
+                <span>concrete next action</span>
+              </div>
+              <div class="stack">
+                
+                <div class="module">
+                  <div class="eyebrow">Track today</div>
+                  <strong>
+                    
+                    <a href="https://deepinfra.com/blog/deepseek-v3-2-api-benchmarks" target="_blank" rel="noopener noreferrer">Pressure-test DeepSeek V3.2 API Benchmarks: Latency, Throughput &amp; Cost.</a>
+                    
+                  </strong>
+                  <p>Use DeepInfra as the source of truth, then decide whether this belongs in the next build cycle.</p>
+                </div>
+                
+                <div class="module">
+                  <div class="eyebrow">Compare next</div>
+                  <strong>
+                    
+                    <a href="https://llm-stats.com/llm-updates" target="_blank" rel="noopener noreferrer">Read the model landscape angle from LLM Stats.</a>
+                    
+                  </strong>
+                  <p>Matched model, models, pricing, context window; use it to separate durable pattern from one-off headline.</p>
+                </div>
+                
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="triple">
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Read next</h2>
+                <span>source route</span>
+              </div>
+              <div class="linklist">
+                
+                <a href="https://deepinfra.com/blog/deepseek-v3-2-api-benchmarks" target="_blank" rel="noopener noreferrer">
+                    <strong>Read DeepInfra</strong>
+                    <small>DeepSeek V3.2 API Benchmarks: Latency, Throughput &amp; Cost</small>
+                  </a>
+                
+                <a href="https://llm-stats.com/llm-updates" target="_blank" rel="noopener noreferrer">
+                    <strong>Read LLM Stats</strong>
+                    <small>AI Model Updates Today (June 2026) – Latest AI Model Releases</small>
+                  </a>
+                
+                <a href="https://dev.to/vektor_memory_43f51a32376/the-state-of-ai-agent-memory-in-2026-what-the-research-actually-shows-3aja" target="_blank" rel="noopener noreferrer">
+                    <strong>Read DEV Community</strong>
+                    <small>The State of AI Agent Memory in 2026: What the Research Actually Shows</small>
+                  </a>
+                
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Reading rules</h2>
+                <span>from today's articles</span>
+              </div>
+              <div class="stack">
+                
+                <div class="module">
+                  <div class="eyebrow">Track</div>
+                  <strong>Lead with DeepInfra because it scored 5.23.</strong>
+                  <p>The matched terms are model, models, pricing, benchmark, which explains why this story outranks the rest of the queue.</p>
+                </div>
+                
+                <div class="module">
+                  <div class="eyebrow">Model Landscape</div>
+                  <strong>Keep LLM Stats visible as the second read.</strong>
+                  <p>It adds model, models, pricing, context window and keeps the briefing from becoming a single-source summary.</p>
+                </div>
+                
+                <div class="module">
+                  <div class="eyebrow">Decision</div>
+                  <strong>Use test framing for DEV Community.</strong>
+                  <p>The article is under an hour old and belongs in hermetic agents, so it should be read after the top two.</p>
+                </div>
+                
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="inner">
+              <div class="section-title">
+                <h2>Issue metadata</h2>
+                <span>archive + trust layer</span>
+              </div>
+              <div class="meta-grid">
+                <div class="meta-item">
+                  <div class="eyebrow">Date</div>
+                  <strong>June 3, 2026</strong>
+                  <p>Morning edition</p>
+                </div>
+                <div class="meta-item">
+                  <div class="eyebrow">Published</div>
+                  <strong>9:43 AM PDT</strong>
+                  <p>Local-time stamp</p>
+                </div>
+                <div class="meta-item">
+                  <div class="eyebrow">Source window</div>
+                  <strong>Prior 18 hours</strong>
+                  <p>Recency-bounded inputs</p>
+                </div>
+                <div class="meta-item">
+                  <div class="eyebrow">Issue ID</div>
+                  <strong>#20260603</strong>
+                  <p>Persistent archive key</p>
+                </div>
+              </div>
+              <div class="footer-note">
+                <p><strong>Archive note:</strong> Archived with DeepInfra as the lead source, model landscape as the top category, and model, models, pricing, benchmark as the matched evidence.</p>
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <div class="footrail">
+        <div class="rail-group">
+          <span>production v1</span>
+          <span>model landscape / hermetic agents / dev tooling</span>
+        </div>
+        <div class="rail-group">
+          
+          <span>track 5.2</span>
+          
+          <span>track 5.2</span>
+          
+          <span>test 5.2</span>
+          
+          <span>test 4.7</span>
+          
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

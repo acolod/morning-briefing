@@ -1,10 +1,10 @@
 {
-  "hermetic_agents": 0.85,
-  "dev_tooling": 0.68,
-  "product_building": 0.51,
-  "model_landscape": 0.43,
-  "voice_audio": 0.26,
-  "video_gen": 0.26,
-  "legal_ai": 0.04,
-  "general_ai": 0.34
+  "hermetic_agents": 0.7225,
+  "dev_tooling": 0.578,
+  "product_building": 0.4335,
+  "model_landscape": 0.3655,
+  "voice_audio": 0.221,
+  "video_gen": 0.221,
+  "legal_ai": 0.034,
+  "general_ai": 0.289
 }
