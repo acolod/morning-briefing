@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morning AI Brief</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    :root {
+      color-scheme: dark;
+      --bg: #060606;
+      --panel: rgba(18, 18, 18, 0.88);
+      --panel-soft: rgba(255, 255, 255, 0.02);
+      --line: rgba(255, 236, 209, 0.11);
+      --line-strong: rgba(255, 178, 78, 0.28);
+      --text: #f3eee5;
+      --muted: #b9af9f;
+      --dim: #867c6e;
+      --accent: #f4a84d;
+      --accent-2: #ffd7a4;
+      --adopt: #7cd889;
+      --try: #f4a84d;
+      --track: #6ba0ff;
+      --note: #a89880;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.44);
+      --max: 740px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      letter-spacing: 0;
+      background: linear-gradient(180deg, #040404 0%, var(--bg) 38%, #050505 100%);
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 100% 4px, 4px 100%;
+      opacity: 0.055;
+      mix-blend-mode: soft-light;
+    }
+
+    .shell {
+      width: min(calc(100% - 20px), var(--max));
+      margin: 0 auto;
+      padding: 14px 0 40px;
+    }
+
+    .frame {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .toprail, .footrail {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(8,8,8,0.62);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: var(--dim);
+    }
+    .toprail { border-bottom: 1px solid var(--line); }
+    .footrail { border-top: 1px solid var(--line); }
+
+    .rail-left, .rail-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(244,168,77,0.10), 0 0 14px rgba(244,168,77,0.18);
+    }
+
+    .rail-title {
+      color: var(--accent-2);
+    }
+
+    .canvas {
+      position: relative;
+      z-index: 1;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section {
+      padding: 16px 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section + .section {
+      border-top: 1px solid var(--line);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+    }
+    .top-story-section {
+      background: var(--panel);
+    }
+    .signals-section {
+      background: linear-gradient(180deg, rgba(107,160,255,0.045), rgba(18,18,18,0.84));
+    }
+    .radar-section {
+      background: linear-gradient(180deg, rgba(124,216,137,0.038), rgba(18,18,18,0.82));
+    }
+    .move-section {
+      background: linear-gradient(180deg, rgba(244,168,77,0.045), rgba(18,18,18,0.84));
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      border: 1px solid var(--line);
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .tag--adopt { color: var(--adopt); background: rgba(124,216,137,0.18); border-color: rgba(124,216,137,0.28); }
+    .tag--try   { color: var(--try);   background: rgba(244,168,77,0.18);  border-color: rgba(244,168,77,0.32); }
+    .tag--track { color: var(--track); background: rgba(107,160,255,0.18); border-color: rgba(107,160,255,0.30); }
+    .tag--note  { color: var(--note);  background: rgba(168,152,128,0.18); border-color: rgba(168,152,128,0.32); }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--dim);
+      margin-bottom: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .source-name { color: var(--muted); }
+    .source-date { color: var(--dim); }
+    .source-date::before { content: '·'; margin-right: 0.5rem; }
+
+    .headline {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--accent-2);
+    }
+
+    .take {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .why-now {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      color: #edd4b0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .section-header::before {
+      content: '';
+      width: 3px;
+      height: 1em;
+      background: var(--accent);
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+    .section-header h2 {
+      margin: 0;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: var(--dim);
+    }
+    .section-header h2::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 1px;
+      margin-top: 5px;
+      background: var(--accent);
+      opacity: 0.42;
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .signals {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .signal {
+      display: block;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-left: 2px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+    }
+
+    .signal-headline {
+      display: block;
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .signal-tag {
+      display: inline-block;
+      margin-top: 7px;
+    }
+
+    .signal-take {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .radar {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .radar li {
+      position: relative;
+      padding-left: 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .radar li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 5px;
+      height: 5px;
+      border-radius: 1px;
+      background: var(--dim);
+    }
+
+    .one-move {
+      padding: 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(244,168,77,0.08), rgba(244,168,77,0.03));
+    }
+    .one-move p {
+      margin: 0;
+      color: var(--accent-2);
+      font-size: 0.93rem;
+      line-height: 1.55;
+    }
+
+    .issue-metadata {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      border-top: 1px solid var(--line);
+      background: var(--line);
+    }
+    .metadata-item {
+      padding: 12px 16px;
+      background: rgba(8,8,8,0.62);
+    }
+    .metadata-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--dim);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+    }
+    .metadata-value {
+      display: block;
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .footer-note {
+      padding: 14px 16px 10px;
+      border-top: 1px solid var(--line);
+    }
+    .footer-note p {
+      margin: 0;
+      color: var(--dim);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .kimi-footer {
+      margin: 0;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--dim);
+      padding: 1rem 0;
+    }
+
+    .banner-image {
+      margin: 16px 16px 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      max-height: 200px;
+      background: rgba(255,255,255,0.02);
+    }
+    .banner-image img {
+      display: block;
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+    }
+
+    @media (max-width: 940px) {
+      .issue-metadata {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .shell {
+        width: min(calc(100% - 10px), var(--max));
+        padding-top: 8px;
+      }
+      .toprail, .footrail {
+        flex-wrap: wrap;
+        padding: 8px 12px;
+      }
+      .headline {
+        font-size: 1.15rem;
+      }
+      .section {
+        padding: 12px 12px 14px;
+      }
+      .signal {
+        padding: 10px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="frame">
+
+      <div class="toprail">
+        <div class="rail-left">
+          <span class="status-dot"></span>
+          <span class="rail-title">Morning AI Brief</span>
+          <span>v2 editorial</span>
+          <span>Issue001</span>
+        </div>
+        <div class="rail-right">
+          <span>June 5, 2026</span>
+          <span>6:30 AM PT</span>
+          <span>28 scanned</span>
+          <span>9 read</span>
+        </div>
+      </div>
+
+      <div class="canvas">
+
+        <div class="banner-image">
+          <img src="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; viewBox=&#39;0 0 1200 320&#39;%3E%3Crect width=&#39;1200&#39; height=&#39;320&#39; fill=&#39;%23060606&#39;/%3E%3Cpath d=&#39;M0 230 L220 80 L440 190 L680 70 L930 180 L1200 55 L1200 320 L0 320 Z&#39; fill=&#39;%23f4a84d&#39; fill-opacity=&#39;0.20&#39;/%3E%3Ccircle cx=&#39;930&#39; cy=&#39;94&#39; r=&#39;58&#39; fill=&#39;%236ba0ff&#39; fill-opacity=&#39;0.35&#39;/%3E%3Cpath d=&#39;M120 248 H1080&#39; stroke=&#39;%23ffd7a4&#39; stroke-opacity=&#39;0.35&#39; stroke-width=&#39;2&#39;/%3E%3C/svg%3E" alt="Issue banner" loading="lazy" />
+        </div>
+
+        <section class="section top-story-section" aria-label="Top story">
+          <div class="section-header">
+            <h2>Top story</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="top-meta">
+            <span class="tag tag--adopt">ADOPT</span>
+            <div class="article-meta">
+              <span class="source-name">Example Publication</span>
+<span class="source-date">June 5, 2026</span>            </div>
+          </div>
+          <h1 class="headline">
+            <a href="https://example.com/" target="_blank" rel="noopener noreferrer">Example of today&#39;s top story with a real headline</a>
+          </h1>
+          <p class="take">Example personal take explaining why this matters for the reader&#39;s build.</p>
+          <p class="why-now">→ Example timing context explaining why this is relevant now.</p>
+        </section>
+
+        <section class="section signals-section" aria-label="Signals">
+          <div class="section-header">
+            <h2>Signals</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="signals">
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://example.com/" target="_blank" rel="noopener noreferrer">Example signal item with a clear title</a>
+              </h3>
+              <div class="article-meta">
+                <span class="source-name">Source Name</span>
+<span class="source-date">June 5, 2026</span>              </div>
+              <span class="tag signal-tag tag--try">TRY</span>
+              <p class="signal-take">Example one-sentence take with personal relevance.</p>
+            </div>
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://example.com/" target="_blank" rel="noopener noreferrer">Another example signal with different tag</a>
+              </h3>
+              <div class="article-meta">
+                <span class="source-name">Another Source</span>
+<span class="source-date">June 5, 2026</span>              </div>
+              <span class="tag signal-tag tag--track">TRACK</span>
+              <p class="signal-take">Example take showing how this connects to the reader&#39;s stack.</p>
+            </div>
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://example.com/" target="_blank" rel="noopener noreferrer">Example for background context</a>
+              </h3>
+              <div class="article-meta">
+                <span class="source-name">Industry News</span>
+<span class="source-date">June 5, 2026</span>              </div>
+              <span class="tag signal-tag tag--note">NOTE</span>
+              <p class="signal-take">Example contextual note with no immediate action required.</p>
+            </div>
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://example.com/" target="_blank" rel="noopener noreferrer">Example adopt signal for an immediate workflow update</a>
+              </h3>
+              <div class="article-meta">
+                <span class="source-name">Platform Notes</span>
+<span class="source-date">June 5, 2026</span>              </div>
+              <span class="tag signal-tag tag--adopt">ADOPT</span>
+              <p class="signal-take">Example adopt item that should change today&#39;s operating checklist.</p>
+            </div>
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://example.com/" target="_blank" rel="noopener noreferrer">Example prototype opportunity for local agent tooling</a>
+              </h3>
+              <div class="article-meta">
+                <span class="source-name">Tooling Lab</span>
+<span class="source-date">June 5, 2026</span>              </div>
+              <span class="tag signal-tag tag--try">TRY</span>
+              <p class="signal-take">Example quick experiment that can be tried without derailing the morning.</p>
+            </div>
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://example.com/" target="_blank" rel="noopener noreferrer">Example model runtime signal worth tracking</a>
+              </h3>
+              <div class="article-meta">
+                <span class="source-name">Inference Weekly</span>
+<span class="source-date">June 5, 2026</span>              </div>
+              <span class="tag signal-tag tag--track">TRACK</span>
+              <p class="signal-take">Example runtime context that may affect near-term hardware choices.</p>
+            </div>
+            <div class="signal">
+              <h3 class="signal-headline">
+                <a href="https://example.com/" target="_blank" rel="noopener noreferrer">Example note on ecosystem direction</a>
+              </h3>
+              <div class="article-meta">
+                <span class="source-name">Agent Systems Review</span>
+<span class="source-date">June 5, 2026</span>              </div>
+              <span class="tag signal-tag tag--note">NOTE</span>
+              <p class="signal-take">Example background note that informs priorities without needing action.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section radar-section" aria-label="Radar">
+          <div class="section-header">
+            <h2>Radar</h2>
+            <div class="section-line"></div>
+          </div>
+          <ul class="radar">
+            <li>Example radar item — a trend worth watching over time</li>
+            <li>Another radar item with context about its significance</li>
+            <li>Third radar item that stays brief and watch-oriented</li>
+          </ul>
+        </section>
+
+        <section class="section move-section" aria-label="One move today">
+          <div class="section-header">
+            <h2>One move today</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="one-move">
+            <p>Example concrete next action to take today, with rationale.</p>
+          </div>
+        </section>
+
+      </div>
+
+      <footer class="issue-metadata" aria-label="Issue metadata">
+        <div class="metadata-item">
+          <span class="metadata-label">Date</span>
+          <span class="metadata-value">June 5, 2026</span>
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Published</span>
+          <span class="metadata-value">6:30 AM PT</span>
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Issue metadata</span>
+          <span class="metadata-value">Issue 001</span>
+        </div>
+      </footer>
+
+      <div class="footer-note">
+        <p>Rendered from editorial JSON. Curation, takes, tags, and source selection happen upstream in the cron agent.</p>
+      </div>
+
+      <div class="footrail">
+        <div class="rail-left">
+          <span>v2 editorial</span>
+          <span>editorial json renderer</span>
+        </div>
+        <div class="rail-right">
+          <span class="tag tag--adopt">adopt</span>
+          <span class="tag tag--try">try</span>
+          <span class="tag tag--track">track</span>
+          <span class="tag tag--note">note</span>
+        </div>
+      </div>
+
+      <p class="kimi-footer">Crafted by Kimi · Sources from RSS feeds · <span class="tag tag--note">alpha</span></p>
+
+    </section>
+  </main>
+</body>
+</html>
