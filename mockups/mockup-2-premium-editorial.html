@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Morning AI Brief 005</title>
+<style>
+:root{--bg:#08090b;--text:#f2efe8;--muted:#9c968d;--line:#2c2a27;--green:#5edb87;--amber:#d99a39;--blue:#74a9ff;--note:#8e918f}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}.page{max-width:1100px;margin:auto;padding:56px 24px 72px}.mast{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:end;border-bottom:1px solid var(--line);padding-bottom:28px}.kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:500;letter-spacing:0}h1{font-size:clamp(42px,7vw,82px);line-height:.94;margin:14px 0 0}.meta{display:grid;gap:6px;color:var(--muted);font-size:14px;text-align:right}.top{max-width:860px;margin:64px 0 72px}.source{font-size:14px;color:var(--muted);margin-bottom:10px}.tag{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-left:10px}.adopt{color:var(--green)}.try{color:var(--amber)}.track{color:var(--blue)}.note{color:var(--note)}h2{font-size:clamp(34px,5.5vw,64px);line-height:1.02;margin:0 0 24px}h3{font-size:25px;line-height:1.16;margin:0 0 12px}.take{font-size:20px;line-height:1.62;color:#ddd7cd}.why{border-left:2px solid var(--amber);padding-left:18px;color:#f0d7ad;font-size:17px;margin-top:28px}.section-title{border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:13px;letter-spacing:.12em;text-transform:uppercase}.signals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:42px 52px;margin-top:28px}.signal p{color:#c8c0b5;margin:0}.signal a,.top a{color:inherit;text-decoration:none}.signal a:hover,.top a:hover{text-decoration:underline}.radar,.move{margin-top:64px}.radar ol{font-family:Georgia,"Times New Roman",serif;font-size:24px;line-height:1.38;padding-left:30px}.radar li{margin:18px 0}.move p{font-family:Georgia,"Times New Roman",serif;font-size:31px;line-height:1.3;margin:24px 0 0;color:#fff}@media(max-width:720px){.page{padding:32px 18px 48px}.mast{grid-template-columns:1fr}.meta{text-align:left}.top{margin:42px 0 54px}.signals{grid-template-columns:1fr;gap:32px}.take{font-size:18px}.radar ol{font-size:21px}.move p{font-size:25px}}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="mast">
+    <div><div class="kicker">Issue 005</div><h1>Morning AI Brief</h1></div>
+    <div class="meta"><span>June 4, 2026</span><span>11:13 AM PT</span><span>651 sources scanned</span><span>9 articles read</span></div>
+  </header>
+  <article class="top">
+    <div class="source">Top Story · <a href="https://github.com/huawei-csl/KVarN">GitHub</a> <span class="tag adopt">adopt</span></div>
+    <h2><a href="https://github.com/huawei-csl/KVarN">KVarN makes KV-cache quantization look practical instead of theoretical</a></h2>
+    <p class="take">This is the first KV-cache quantization release in a while that reads like an operator tool instead of a paper demo: native vLLM backend, one-flag enablement, and a stated goal of keeping FP16-level accuracy while extending context 3-5x. For your setup, if this lands cleanly it directly changes how ambitious Hermes can be with long transcripts, persistent memory, and multi-step tool loops on constrained VRAM.</p>
+    <p class="why">A practical KV-cache win is one of the few infrastructure changes that could immediately expand what your local Hermes box can do this week.</p>
+  </article>
+  <section><div class="section-title">Signals</div><div class="signals">
+    <article class="signal"><div class="source"><a href="https://arxiv.org/abs/2606.04769">ArXiv</a> <span class="tag adopt">adopt</span></div><h3><a href="https://arxiv.org/abs/2606.04769">Description-Code Inconsistency in Real-world MCP Servers</a></h3><p>Studies 19,200 description-code pairs across 2,214 MCP servers — 9.93% inconsistent. For Hermes: treat tool descriptions as untrusted metadata and add a description-vs-capability audit before relying on a new server.</p></article>
+    <article class="signal"><div class="source"><a href="https://arxiv.org/abs/2606.04315">ArXiv</a> <span class="tag try">try</span></div><h3><a href="https://arxiv.org/abs/2606.04315">Cross-Scenario Generality of Agentic Memory Systems</a></h3><p>Self-managed memory via tool calls beat passive memory pipelines across scenarios. Lines up with how Hermes already thinks: memory as an inspectable, writable system.</p></article>
+    <article class="signal"><div class="source"><a href="https://arxiv.org/abs/2606.04425">ArXiv</a> <span class="tag try">try</span></div><h3><a href="https://arxiv.org/abs/2606.04425">What If Prompt Injection Never Left? Cross-Session Stored Prompt Injection</a></h3><p>Upgrades prompt injection from chat-session nuisance to a persistence problem spanning memory and filesystems. Worth turning into a small red-team checklist for Hermes cron jobs.</p></article>
+    <article class="signal"><div class="source"><a href="https://www.anthropic.com/institute/recursive-self-improvement">Anthropic</a> <span class="tag track">track</span></div><h3><a href="https://www.anthropic.com/institute/recursive-self-improvement">When AI builds itself — Anthropic ships 8x more code per quarter</a></h3><p>Your advantage comes from building workflows that compound model leverage, not from hand-writing every layer yourself.</p></article>
+    <article class="signal"><div class="source"><a href="https://arxiv.org/abs/2606.05043">ArXiv</a> <span class="tag track">track</span></div><h3><a href="https://arxiv.org/abs/2606.05043">Strabo: Declarative Specification of Agentic Interaction Protocols</a></h3><p>Points toward agent-to-agent protocols as declared, validated engineering artifacts rather than improvised prompts.</p></article>
+    <article class="signal"><div class="source"><a href="https://blog.cloudflare.com/voidzero-joins-cloudflare/">Cloudflare</a> <span class="tag note">note</span></div><h3><a href="https://blog.cloudflare.com/voidzero-joins-cloudflare/">VoidZero is joining Cloudflare</a></h3><p>Cloudflare wants to own more of the developer-runtime surface. Relevant if you push more gateway or edge-facing Hermes components.</p></article>
+  </div></section>
+  <section class="radar"><div class="section-title">Radar</div><ol><li>MCP security shifting from 'is the server malicious?' to 'does the description match the implementation?'</li><li>Long-horizon agent quality is about persistence and editable memory, not raw model cleverness</li><li>Local inference wins from KV-cache compression and precision management, not chasing new base models</li></ol></section>
+  <section class="move"><div class="section-title">One Move</div><p>Create a tiny Hermes 'tool trust audit' today: for each MCP server you actively use, list declared actions, manually verify real side effects, and flag any mismatch.</p></section>
+</main>
+</body>
+</html>

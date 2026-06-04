@@ -15,9 +15,9 @@ def test_empty_editorial_renders():
     html = render({"signals": [], "radar": []}, config=config)
 
     assert html.startswith("<!DOCTYPE html>")
-    assert "No supporting signals in this issue." in html
-    assert "Top story" in html
-    assert "One move today" in html
+    assert "/top_story" in html
+    assert "/signals" in html
+    assert "/one_move" in html
 
 
 def test_demo_editorial_renders():

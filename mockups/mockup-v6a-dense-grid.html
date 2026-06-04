@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Morning AI Brief 005 - Dense Grid</title>
+<style>
+:root{--bg:#040404;--text:#e7e0d2;--soft:#c9c0b0;--muted:#817a6d;--note:#77736b;--rule:#27241f;--accent:#e8982a;--amber:#f4a84d;--green:#52cf78;--blue:#5d95e8}*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:var(--bg);color:var(--text);font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.43}.page{max-width:1120px;margin:0 auto;padding:18px 14px 36px}.top{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;border:1px solid var(--rule);border-width:0 0 1px;padding:0 0 10px;margin-bottom:12px}.cmd{color:var(--accent);font-size:12px}.title{margin:3px 0 0;color:var(--text);font-size:24px;line-height:1.05;font-weight:700}.meta{display:flex;gap:8px 16px;flex-wrap:wrap;justify-content:flex-end;color:var(--muted);font-size:11px;text-transform:uppercase}.label{color:#ba7f34;font-size:11px;line-height:1;text-transform:lowercase;margin:0 0 8px}.label span{color:var(--muted)}.signal-label{padding-top:12px}.topstory{grid-column:1/-1;padding:12px 0 14px;border-bottom:1px solid var(--rule)}h2,h3,p{margin:0}.topstory h2{font-size:clamp(24px,4.6vw,44px);line-height:1.04;margin:0 0 9px;max-width:1000px}.take{color:#d8d0c2;max-width:940px}.why{color:#e5b56e;margin-top:8px;max-width:900px}.source{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;line-height:1;margin-bottom:7px}.tag{display:inline-flex;align-items:center;border:1px solid currentColor;padding:1px 6px;font-size:10px;line-height:1.2;text-transform:uppercase}.adopt{color:var(--green)}.try{color:var(--accent)}.track{color:var(--blue)}.note{color:var(--note)}a{color:inherit;text-decoration:none}a:hover{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}.signals{display:grid;grid-template-columns:1fr 1fr;gap:0 22px;border-bottom:1px solid var(--rule)}.signal{padding:12px 0;border-top:1px solid var(--rule)}.signal h3{font-size:15px;line-height:1.26;margin-bottom:6px}.signal p:last-child{color:var(--soft)}.lower{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.75fr);gap:22px;border-bottom:1px solid var(--rule)}.block{padding:12px 0}.radar{display:grid;grid-template-columns:24px 1fr;gap:7px 12px}.n{color:var(--accent);font-size:11px}.move{border-left:2px solid var(--accent);padding-left:12px;color:#fff;font-size:16px;line-height:1.35}@media(max-width:760px){.page{padding:14px 12px 30px}.top{grid-template-columns:1fr;gap:8px}.meta{justify-content:flex-start}.signals,.lower{grid-template-columns:1fr}.signal{padding:11px 0}.topstory h2{font-size:26px}.move{font-size:15px}}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="top">
+    <div><div class="cmd">$ morning-ai-brief --issue 005</div><h1 class="title">Morning AI Brief</h1></div>
+    <div class="meta"><span>June 4, 2026</span><span>11:13 AM PT</span><span>sources 651</span><span>read 9</span></div>
+  </header>
+
+  <article class="topstory">
+    <p class="label">/top_story <span>featured signal</span></p>
+    <p class="source"><a href="https://github.com/huawei-csl/KVarN">GitHub</a> <span class="tag adopt">adopt</span></p>
+    <h2><a href="https://github.com/huawei-csl/KVarN">KVarN makes KV-cache quantization look practical instead of theoretical</a></h2>
+    <p class="take">This is the first KV-cache quantization release that reads like an operator tool: native vLLM backend, one-flag enablement, FP16 accuracy while extending context 3-5x. For your setup, if this lands cleanly it changes how ambitious Hermes can be with long transcripts on constrained VRAM.</p>
+    <p class="why">why_now: A KV-cache win is one of the few infrastructure changes that could expand what your local Hermes box can do this week.</p>
+  </article>
+
+  <section>
+    <p class="label signal-label">/signals</p>
+    <div class="signals">
+      <article class="signal"><p class="source"><a href="https://arxiv.org/abs/2606.04769">ArXiv</a> <span class="tag adopt">adopt</span></p><h3><a href="https://arxiv.org/abs/2606.04769">Description-Code Inconsistency in Real-world MCP Servers</a></h3><p>9.93% of 19,200 MCP description-code pairs are inconsistent. Treat tool descriptions as untrusted metadata.</p></article>
+      <article class="signal"><p class="source"><a href="https://arxiv.org/abs/2606.04315">ArXiv</a> <span class="tag try">try</span></p><h3><a href="https://arxiv.org/abs/2606.04315">Cross-Scenario Generality of Agentic Memory Systems</a></h3><p>Self-managed memory via tool calls beat passive memory pipelines. Memory as an inspectable, writable system.</p></article>
+      <article class="signal"><p class="source"><a href="https://arxiv.org/abs/2606.04425">ArXiv</a> <span class="tag try">try</span></p><h3><a href="https://arxiv.org/abs/2606.04425">Cross-Session Stored Prompt Injection in Agentic Systems</a></h3><p>Prompt injection as a persistence problem spanning memory and filesystems. Worth a red-team checklist for Hermes cron.</p></article>
+      <article class="signal"><p class="source"><a href="https://www.anthropic.com/institute/recursive-self-improvement">Anthropic</a> <span class="tag track">track</span></p><h3><a href="https://www.anthropic.com/institute/recursive-self-improvement">When AI builds itself - Anthropic ships 8x more code</a></h3><p>Your advantage comes from workflows that compound model leverage, not hand-writing every layer.</p></article>
+      <article class="signal"><p class="source"><a href="https://arxiv.org/abs/2606.05043">ArXiv</a> <span class="tag track">track</span></p><h3><a href="https://arxiv.org/abs/2606.05043">Strabo: Declarative Agentic Interaction Protocols</a></h3><p>Agent-to-agent protocols as declared, validated engineering artifacts rather than improvised prompts.</p></article>
+      <article class="signal"><p class="source"><a href="https://blog.cloudflare.com/voidzero-joins-cloudflare/">Cloudflare</a> <span class="tag note">note</span></p><h3><a href="https://blog.cloudflare.com/voidzero-joins-cloudflare/">VoidZero is joining Cloudflare</a></h3><p>Cloudflare expanding developer-runtime surface. Relevant for edge-facing Hermes components.</p></article>
+    </div>
+  </section>
+
+  <div class="lower">
+    <section class="block">
+      <p class="label">/radar</p>
+      <div class="radar"><span class="n">01</span><span>MCP security shifting from 'is the server malicious?' to 'does the description match the implementation?'</span><span class="n">02</span><span>Long-horizon agent quality is about persistence and editable memory, not raw model cleverness</span><span class="n">03</span><span>Local inference wins from KV-cache compression and precision management</span></div>
+    </section>
+    <section class="block">
+      <p class="label">/one_move</p>
+      <p class="move">Create a tiny Hermes 'tool trust audit' today: for each MCP server you actively use, list declared actions, manually verify real side effects, and flag any mismatch.</p>
+    </section>
+  </div>
+</main>
+</body>
+</html>

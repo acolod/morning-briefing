@@ -11,11 +11,11 @@ class MorningBriefingPipelineTests(unittest.TestCase):
 
         self.assertIn("<!DOCTYPE html>", html)
         self.assertIn("Morning AI Brief", html)
-        self.assertIn("Top story", html)
-        self.assertIn("Signals", html)
-        self.assertIn("Radar", html)
-        self.assertIn("One move today", html)
-        self.assertIn("Issue metadata", html)
+        self.assertIn("/top_story", html)
+        self.assertIn("/signals", html)
+        self.assertIn("/radar", html)
+        self.assertIn("/one_move", html)
+        self.assertIn("sources", html.lower())
         self.assertIn("ADOPT", html)
 
     def test_editorial_dict_build_uses_source_payload(self) -> None:
@@ -33,7 +33,7 @@ class MorningBriefingPipelineTests(unittest.TestCase):
             output_path.write_text(html, encoding="utf-8")
             written = output_path.read_text(encoding="utf-8")
 
-        self.assertIn("footrail", written)
+        self.assertIn("crafted by kimi", written.lower())
 
 
 if __name__ == "__main__":

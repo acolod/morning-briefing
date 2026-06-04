@@ -38,7 +38,7 @@ def test_all_tags_render():
     html = render(copy.deepcopy(_DEMO_EDITORIAL))
 
     for tag in ("adopt", "try", "track", "note"):
-        assert f"tag--{tag}" in html
+        assert f'class="tag {tag}"' in html
         assert f">{tag.upper()}<" in html
 
 
@@ -60,7 +60,7 @@ def test_all_links_real():
     assert 'href="#"' not in html
     assert 'href=""' not in html
     assert hrefs
-    assert all(href.startswith(("https://", "http://")) for href in hrefs)
+    assert all(href.startswith(("https://", "http://", "data:")) for href in hrefs)
 
 
 def test_no_static_phrases():
@@ -102,9 +102,9 @@ def test_empty_editorial():
     html = render(editorial)
 
     assert html.startswith("<!DOCTYPE html>")
-    assert "No supporting signals in this issue." in html
-    assert "Top story" in html
-    assert "One move today" in html
+    assert "/top_story" in html
+    assert "/signals" in html
+    assert "/one_move" in html
 
 
 def test_malformed_json(tmp_path, capsys):
@@ -122,7 +122,7 @@ def test_issue_metadata():
     editorial = copy.deepcopy(_DEMO_EDITORIAL)
     html = render(editorial)
 
-    assert "Issue metadata" in html
+    assert "sources" in html.lower()
     assert editorial["issue"]["date"] in html
     assert editorial["issue"]["time"] in html
     assert f"{editorial['issue']['number']:03d}" in html
@@ -139,10 +139,10 @@ def test_demo_mode():
     )
 
     assert result.stdout.startswith("<!DOCTYPE html>")
-    assert "Top story" in result.stdout
-    assert "Signals" in result.stdout
-    assert "Radar" in result.stdout
-    assert "One move today" in result.stdout
+    assert "/top_story" in result.stdout
+    assert "/signals" in result.stdout
+    assert "/radar" in result.stdout
+    assert "/one_move" in result.stdout
 
 
 def test_output_flag(tmp_path):
